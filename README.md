@@ -1,17 +1,18 @@
 # Air Quality and Pollution Pattern Analysis (DA-013)
 **Domain:** Environmental Analytics  
-**Architecture:** Part 1 of 2 (Frontend Client & UI/UX Analytics Suite)
+**Architecture:** Full-Stack Web Application (HTML5/Bootstrap 5 Frontend + Python 3 Flask REST API)
 
 ---
 
-## 🌍 Project Purpose
+## 🌍 Project Purpose & Scope
 
-The **Air Quality and Pollution Pattern Analysis (DA-013)** web application enables environmental analysts, researchers, and students to:
-- Explore ambient air-quality measurements across multiple urban, industrial, and natural monitoring locations.
-- Track temporal trajectories and compare pollutant concentrations (PM2.5, PM10, NO2, SO2, O3) over time.
-- Identify extreme pollution spikes and investigate particulate relationships (e.g., PM2.5 vs. PM10 correlation).
-- Audit data quality (missing values, duplicates, outliers) and run simulated data cleaning pipelines.
-- Generate and export executive environmental analysis reports.
+The **Air Quality and Pollution Pattern Analysis (DA-013)** platform enables environmental analysts, researchers, municipal planners, and students to:
+- Ingest and normalize public sensor datasets across diverse monitoring locations (urban, industrial, suburban, ecological reserves).
+- Audit data quality by distinguishing between true missing values (`NaN`), recorded zeros (`0.0`), and out-of-physical-range readings.
+- Execute configurable, non-destructive data cleaning pipelines (deduplication, date parsing, negative clamping, temporal median imputation).
+- Compute descriptive statistical metrics (mean, median, min, max, variance) filtered by date, city, monitoring station, and pollutant species (PM2.5, PM10, NO2, SO2, O3).
+- Visualize pollution patterns through interactive Chart.js visualizations (Line trends, Station comparison bars, Frequency histograms, and PM2.5 vs PM10 scatter correlations).
+- Generate and download executive environmental analysis reports and cleaned CSV files.
 
 > **Mandatory Analytical Disclaimer:**  
 > *"This application presents descriptive analysis of recorded measurements. Missing values are not treated as zero, and comparisons must account for measurement units, monitoring locations, and data quality. The results do not establish pollution causes or provide medical conclusions."*
@@ -20,134 +21,334 @@ The **Air Quality and Pollution Pattern Analysis (DA-013)** web application enab
 
 ## 🛠 Technology Stack
 
-- **HTML5:** Semantic architecture, accessible landmarks (`<nav>`, `<aside>`, `<main>`, `<section>`).
-- **CSS3:** Custom responsive layout system, CSS custom properties (variables), modern light/dark themes, and print-optimized export media query.
-- **JavaScript (ES6+):** Modular, decoupled architecture separating UI logic (`app.js`), visualization pipelines (`charts.js`), and data layer (`api.js`).
-- **Bootstrap 5.3 (CDN):** Responsive grid, accessible form controls, badges, and modals.
-- **Chart.js 4.4 (CDN):** High-performance interactive visualizations (Line, Bar, Histogram, Scatter).
-- **Font Awesome 6.5 (CDN):** Environmental and operational vector iconography.
+### Backend Stack
+- **Python 3:** Core programming language
+- **Flask (3.1+):** Micro web framework providing modular REST API endpoints
+- **Flask-CORS (6.0+):** Cross-Origin Resource Sharing for decoupled client communication
+- **Pandas (3.1+):** High-performance tabular data ingestion, quality auditing, time-series parsing, and cleaning
+- **NumPy (2.5+):** Numerical operations, array transformations, and Pearson correlation coefficient calculation
+- **python-dateutil:** Robust ISO-8601 and heterogeneous date format parsing
+- **unittest:** Built-in Python automated testing framework
+
+### Frontend Stack
+- **HTML5:** Semantic architecture with accessible landmarks (`<header>`, `<nav>`, `<aside>`, `<main>`, `<section>`)
+- **CSS3:** Custom responsive layout system, CSS custom properties (variables), light and dark mode palettes, and print stylesheet
+- **Bootstrap 5.3 (CDN):** Responsive grid layout, modals, badges, and accessible forms
+- **Vanilla JavaScript (ES6+):** Decoupled architecture separating API communication (`api.js`), chart rendering (`charts.js`), and UI controller logic (`app.js`)
+- **Chart.js 4.4 (CDN):** Canvas-based interactive data visualizations with theme adaptation and PNG export
+- **Font Awesome 6.5 (CDN):** Environmental and operational vector iconography
 
 ---
 
-## 📁 Project Directory Structure
+## 📁 System Architecture & Directory Structure
 
 ```text
 air-quality/
-├── index.html                     # Root redirect entry point
-├── README.md                      # Complete system documentation
-└── frontend/
-    ├── index.html                 # Main application dashboard interface
-    ├── css/
-    │   └── style.css              # Custom environmental theme, responsive layout & dark mode
-    ├── js/
-    │   ├── api.js                 # Abstracted API client & local mock engine
-    │   ├── charts.js              # Chart.js visualization engine & theme synchronization
-    │   └── app.js                 # UI/UX controller, routing, search/pagination, cleaning
-    └── assets/
-        └── sample_air_quality_data.csv   # Pre-packaged 2024 realistic air quality dataset
+├── index.html                                 # Root redirect entry point
+├── README.md                                  # Complete system documentation & API reference
+│
+├── frontend/                                  # Presentation Layer (Client)
+│   ├── index.html                             # Single Page Application (SPA) dashboard interface
+│   ├── css/
+│   │   └── style.css                          # Environmental design system & dark theme styles
+│   ├── js/
+│   │   ├── api.js                             # API service client with auto-detection & mock fallback
+│   │   ├── charts.js                          # Chart.js visualization manager & theme adapter
+│   │   └── app.js                             # UI controller, routing, search, pagination, and audit
+│   └── assets/
+│       └── sample_air_quality_data.csv        # Pre-packaged 2024 realistic air quality dataset
+│
+└── backend/                                   # Application & Analytics Layer (Server)
+    ├── app.py                                 # Flask entry point, routing, and centralized error handling
+    ├── config.py                              # Centralized configuration parameters and thresholds
+    ├── requirements.txt                       # Python dependencies specification
+    ├── services/                              # Core business logic and analytics services
+    │   ├── __init__.py
+    │   ├── data_loader.py                     # CSV ingestion, header normalization, and preview pagination
+    │   ├── data_cleaner.py                    # Quality audit engine and cleaning pipeline
+    │   ├── analytics.py                       # Descriptive statistics and station aggregations
+    │   ├── chart_service.py                   # Chart.js JSON data transformation engine
+    │   └── report_service.py                  # Executive report generation (JSON, TXT, CSV)
+    ├── uploads/                               # Secure temporary storage for uploaded datasets
+    ├── outputs/                               # Generated cleaned CSVs and text reports
+    └── tests/                                 # Automated test suite
+        ├── __init__.py
+        └── test_backend.py                    # Comprehensive test cases covering all 12 core workflows
 ```
 
 ---
 
-## 🚀 How to Run the Frontend Locally
+## ⚡ How to Run the Complete Application Locally
 
-No external build tools or node package installations are required! You can run the application using any of the following methods:
+Follow these straightforward steps to run the Flask backend and the frontend on any standard laptop.
 
-### Method 1: Direct Browser Launch (Simplest)
-1. Navigate to the project directory: `c:\Users\HP\Desktop\air\air-quality\frontend\`.
-2. Double-click **`index.html`** or right-click and choose **Open with > Google Chrome / Microsoft Edge / Mozilla Firefox**.
-3. The dashboard will load immediately in **Demo Mode** with all charts, metrics, and navigation active.
+### Step 1: Set Up & Start the Python Backend
 
-### Method 2: Python Built-in HTTP Server
-If Python is installed on your workstation:
-```bash
-# In the project root or frontend folder
-cd c:\Users\HP\Desktop\air\air-quality\frontend
-python -m http.server 8080
-```
-Open your browser at: `http://localhost:8080`
+1. Open PowerShell or Command Prompt and navigate to the project directory:
+   ```powershell
+   cd "c:\Users\HP\Desktop\air\air-quality"
+   ```
 
-### Method 3: VS Code "Live Server" Extension
-1. Open the `air-quality` folder in Visual Studio Code.
-2. Right-click `frontend/index.html` and select **"Open with Live Server"**.
-3. The app will launch with hot-reload enabled.
+2. Activate the pre-configured virtual environment:
+   ```powershell
+   # On Windows (PowerShell):
+   .\backend\.venv\Scripts\Activate.ps1
 
-### Method 4: Node.js (npx serve or http-server)
-```bash
-npx serve c:\Users\HP\Desktop\air\air-quality\frontend
-```
+   # Or in Command Prompt:
+   backend\.venv\Scripts\activate.bat
+   ```
 
----
+   *(Note: If you are setting up on a fresh machine without `.venv`, simply run `pip install -r backend/requirements.txt`)*
 
-## 🖥 Application Layout & Features
+3. Start the Flask server:
+   ```powershell
+   python backend\app.py
+   ```
 
-### 1. Sidebar Navigation (Collapsible & Mobile Drawer)
-- **Dashboard:** High-level summary cards (Total Records: 2,450; 5 Stations; 5 Pollutants; 2024 Continuous Range), station status breakdown, and system integrity indicator.
-- **Upload Dataset:** Drag-and-drop CSV uploader with file validation, size computation, simulation progress bar, and 1-click **"Load Sample Data"** button.
-- **Data Preview:** Interactive dataset table with live text search, city/station dropdown filtering, column-header sorting (click Date, City, Location, PM2.5, PM10, etc.), dynamic pagination, and buttons to inspect empty/loading states.
-- **Data Cleaning:** Quality audit dashboard displaying missing values (84), duplicates (12), invalid numerics (7), and invalid dates (0); interactive **"Check Data Quality"**, **"Clean Dataset"**, and client-side **"Download Cleaned CSV"** buttons.
-- **Pollution Analysis:** Parametric filters (Start/End Date, City, Location, Pollutant); dynamically computes Average Level, Maximum Level (with date/station), Minimum Level, and Sample Count with station intensity comparison bars.
-- **Charts & Visualizations:** 4 interactive Chart.js charts:
-  - **A. Line Chart:** Pollutant levels over time with multi-station trendlines and dynamic pollutant selector.
-  - **B. Bar Chart:** Cross-location comparison of PM2.5, PM10, and NO2 means across 5 monitoring stations.
-  - **C. Histogram:** Frequency distribution across AQI health risk intervals (Good, Moderate, Sensitive, Unhealthy, Hazardous).
-  - **D. Scatter Plot:** Particulate matter correlation (PM2.5 vs PM10, \(r = 0.88\)).
-  - Each chart includes a visible `[DEMO DATA]` badge and high-resolution **PNG download** button.
-- **Reports:** Executive environmental findings, data quality summaries, and print-ready **"Export Report (PDF / Print)"** view.
-- **About Project:** Project metadata, domain, scientific scope, two-part roadmap, and mandatory analytical disclaimer.
+   The server will start at:
+   ```text
+   * Running on http://127.0.0.1:5000/api
+   ```
 
-### 2. Top Navigation Bar
-- **Project Logo & Code:** DA-013.
-- **Backend Status Pill:** Displays *Demo Mode (Flask Disconnected)*; clicking opens a diagnostic modal with configured base URL and connection retesting.
-- **Theme Toggle:** Smoothly switches between Light Mode (crisp emerald/slate) and Dark Mode (deep navy/slate). Persisted in `localStorage` and automatically updates Chart.js axis/grid colors.
-- **User Profile:** Environmental Analyst identity badge.
+### Step 2: Open the Frontend
 
----
+You can open the frontend in any web browser:
 
-## 🔌 Part 2 Backend Integration Specification
+- **Direct Open:** Double-click [`frontend/index.html`](file:///c:/Users/HP/Desktop/air/air-quality/frontend/index.html) or open [`index.html`](file:///c:/Users/HP/Desktop/air/air-quality/index.html).
+- **Or via VS Code Live Server:** Right-click `frontend/index.html` and click **"Open with Live Server"**.
 
-In Part 2, a Python Flask REST API will be integrated at:
+As soon as the page loads, the top navigation bar will show:
 ```text
-http://127.0.0.1:5000/api
+✔ Flask Backend Live (Port 5000)
+```
+And all KPI cards, tables, charts, and quality panels will immediately reflect real computations performed by the Python backend!
+
+---
+
+## 🧪 Running Automated Tests
+
+A comprehensive test suite is provided in `backend/tests/test_backend.py`. To run the tests:
+
+```powershell
+# Navigate to the project root with the virtual environment activated:
+python -m unittest discover -s backend/tests -p "test_*.py"
 ```
 
-The frontend file `frontend/js/api.js` is **pre-wired** for this backend. When the Flask server is online, the frontend automatically transitions from demo mode to live communication without changing any UI code.
-
-### Expected Backend Endpoints Contract
-
-| Method | Endpoint | Query / Body Payload | Response Description |
-|---|---|---|---|
-| `GET` | `/health` | None | Returns `{ status: "ok", service: "DA-013 Flask API" }` to verify connectivity. |
-| `POST` | `/upload` | `multipart/form-data` with `file: <csv>` | Validates CSV headers, saves dataset to server session/storage, returns dataset metadata (`totalRows`, `columns`, `stations`). |
-| `GET` | `/dataset/info` | None | Returns metadata summary (`totalRecords`, `locations`, `pollutantsAvailable`, `dateRange`, `completenessRate`). |
-| `GET` | `/dataset/preview` | `?page=1&limit=10&search=&city=&location=&sortColumn=&sortDir=` | Returns paginated JSON records: `{ total, page, limit, totalPages, data: [...] }`. |
-| `GET` | `/data-quality` | None | Runs Pandas data-quality audit, returns counts of missing values, duplicate rows, out-of-range numeric readings, and health score. |
-| `POST` | `/data-quality/clean` | `{ strategy: "median", dropDuplicates: true, clampMin: 0 }` | Executes Pandas cleaning pipeline, imputes missing values, clamps negative values, returns cleaning summary. |
-| `GET` | `/analysis/pollution` | `?startDate=&endDate=&city=&location=&pollutant=` | Returns computed descriptive metrics: `{ count, average, max, maxLocation, maxDate, min, minLocation, minDate, unit, stationAverages: [...] }`. |
-| `GET` | `/charts/data` | `?type=line\|bar\|histogram\|scatter&pollutant=` | Returns structured Chart.js compatible payload (`labels`, `datasets`). |
-| `GET` | `/export/csv` | None | Streams the cleaned dataset as a downloadable CSV attachment (`Content-Disposition: attachment; filename=cleaned_air_quality.csv`). |
-| `GET` | `/export/report` | `?format=pdf\|json` | Generates and downloads a compiled analytical report. |
+### Verified Test Cases
+1. `test_01_health_check`: Verifies the `/api/health` heartbeat endpoint.
+2. `test_02_default_sample_dataset_info`: Verifies preloaded sample metadata on startup.
+3. `test_03_valid_csv_upload`: Tests multipart upload, header normalization, and schema registration.
+4. `test_04_invalid_file_extension`: Tests rejection of non-CSV files (`.exe`, `.txt`).
+5. `test_05_empty_dataset_rejection`: Tests graceful handling of zero-byte files.
+6. `test_06_data_preview_and_sorting`: Tests pagination, column sorting, and dynamic AQI calculation.
+7. `test_07_data_quality_audit`: Tests detection of missing values, duplicates, and out-of-range sensor values.
+8. `test_08_data_cleaning_pipeline`: Tests deduplication, negative clamping, and median imputation.
+9. `test_09_descriptive_analysis_with_filters`: Tests mean, median, min, max, and station grouping.
+10. `test_10_charts_generation`: Tests generation of all 4 Chart.js charts (Line, Bar, Histogram, Scatter).
+11. `test_11_cleaned_csv_download`: Tests streaming of cleaned CSV attachments.
+12. `test_12_executive_report_generation`: Tests generation of structured JSON and downloadable text reports.
 
 ---
 
-## 🧪 Environmental Reference Standards (WHO Guidelines)
+## 📡 REST API Endpoint Specification
 
-| Pollutant | Chemical Formula | WHO 24-Hour Guideline | Primary Environmental Source |
+All endpoints are hosted under base path `http://127.0.0.1:5000/api`.
+
+All responses follow a consistent JSON response envelope:
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "Operation completed successfully"
+}
+```
+
+| Method | Endpoint | Query / Body Parameters | Description |
 |---|---|---|---|
-| Fine Particulate Matter | **PM2.5** | \(15\ \mu\text{g/m}^3\) | Combustion engines, industrial emissions, power generation |
-| Coarse Particulate Matter | **PM10** | \(45\ \mu\text{g/m}^3\) | Construction dust, mechanical abrasion, windblown soil |
-| Nitrogen Dioxide | **NO2** | \(25\ \text{ppb}\) (\(25\ \mu\text{g/m}^3\)) | Vehicle exhaust, thermal fuel burning |
-| Sulfur Dioxide | **SO2** | \(40\ \text{ppb}\) (\(40\ \mu\text{g/m}^3\)) | Industrial coal/heavy fuel combustion, smelters |
-| Ground-level Ozone | **O3** | \(50\ \text{ppb}\) (8-hour seasonal) | Secondary photochemical smog (UV + NOx + VOCs) |
+| `GET` | `/api/health` | None | Checks service health and returns active dataset ID. |
+| `POST` | `/api/upload` | `multipart/form-data` with `file: <csv>` | Ingests CSV, validates headers, and registers dataset. |
+| `GET` | `/api/dataset/info` | Optional: `dataset_id` in path | Returns dataset metadata, station list, and completeness rate. |
+| `GET` | `/api/dataset/preview` | `page`, `limit`, `search`, `city`, `location`, `sortColumn`, `sortDir` | Returns paginated rows with computed AQI categories. |
+| `GET` | `/api/data-quality` | Optional: `dataset_id` in path | Audits missing values, duplicates, recorded zeros, and health score. |
+| `POST` | `/api/data-quality/clean` | JSON: `{ "impute_method": "median", "drop_duplicates": true }` | Cleans dataset and saves cleaned CSV. |
+| `POST` | `/api/analysis/pollution`| JSON or Query: `{ "pollutant": "pm25", "city": "All", "location": "All", "startDate": "...", "endDate": "..." }` | Calculates descriptive statistics and station averages. |
+| `GET` | `/api/charts/data` | `type=line\|bar\|histogram\|scatter`, `pollutant=pm25` | Returns Chart.js structured datasets. |
+| `GET` | `/api/export/csv` | None | Streams downloadable cleaned CSV file. |
+| `GET` | `/api/export/report` | `format=json\|txt` | Returns executive report as JSON or downloadable text file. |
+| `GET` | `/api/dataset/<id>/report/download` | None | Downloads executive text report file. |
 
 ---
 
-## 👨‍💻 Deliverable Status
+## 📝 Example CSV Dataset Format
 
-- [x] Complete, responsive HTML5 layout with Bootstrap 5.3 & custom styling.
-- [x] Clean CSS3 design system with light/dark theme toggle and smooth transitions.
-- [x] Modular JavaScript architecture (`api.js`, `charts.js`, `app.js`).
-- [x] Four responsive Chart.js visualizations (Line, Bar, Histogram, Scatter) with PNG export.
-- [x] Full UI interactions: sidebar routing, search, pagination, sorting, audit simulation.
-- [x] Comprehensive sample dataset (`sample_air_quality_data.csv`).
-- [x] Ready for Part 2 Flask backend connection.
+The system accepts standard comma-separated values (`.csv`) with automatic column name normalization:
+
+```csv
+Date,City,Monitoring_Location,PM2.5,PM10,NO2,SO2,O3
+2024-01-01,Metropolis,Downtown Central,42.5,68.2,34.1,8.4,22.0
+2024-01-01,Metropolis,Industrial Zone North,78.3,135.0,52.4,18.7,15.2
+2024-01-01,Metropolis,Suburbia East,18.2,32.4,14.6,3.1,38.5
+2024-01-01,Harbor City,Harbor Portside,55.0,92.6,41.2,12.5,28.4
+2024-01-01,Green Valley,Valley Park Eco-Reserve,11.4,21.0,8.2,1.8,44.1
+```
+
+### Supported Column Variations
+- **Date:** `Date`, `date`, `timestamp`, `datetime`, `time`
+- **Location:** `Monitoring_Location`, `location`, `station`, `monitoring_station`, `site`
+- **City:** `City`, `city`, `region`, `area`
+- **PM2.5:** `PM2.5`, `PM2_5`, `pm25`, `pm_25`, `particulate_matter_2.5`
+- **PM10:** `PM10`, `pm10`, `pm_10`, `particulate_matter_10`
+- **NO2:** `NO2`, `no2`, `no_2`, `nitrogen_dioxide`
+- **SO2:** `SO2`, `so2`, `so_2`, `sulfur_dioxide`
+- **O3:** `O3`, `o3`, `ozone`
+
+---
+
+## 💻 Example API Requests & Responses
+
+### 1. Upload Dataset
+**Request:**
+```bash
+curl -X POST http://127.0.0.1:5000/api/upload \
+  -F "file=@frontend/assets/sample_air_quality_data.csv"
+```
+
+**Response (HTTP 201 Created):**
+```json
+{
+  "success": true,
+  "message": "File uploaded and registered successfully.",
+  "data": {
+    "datasetId": "48b0a9cd-c187-4632-9cb5-ef5647585093",
+    "filename": "sample_air_quality_data.csv",
+    "totalRecords": 85,
+    "locationsCount": 5,
+    "locations": [
+      "Downtown Central",
+      "Industrial Zone North",
+      "Suburbia East",
+      "Harbor Portside",
+      "Valley Park Eco-Reserve"
+    ],
+    "cities": ["Metropolis", "Harbor City", "Green Valley"],
+    "pollutantsAvailable": ["PM2.5", "PM10", "NO2", "SO2", "O3"],
+    "dateRange": {
+      "start": "2024-01-01",
+      "end": "2024-12-20"
+    },
+    "completenessRate": "98.5%"
+  }
+}
+```
+
+### 2. Descriptive Pollution Analysis
+**Request:**
+```bash
+curl -X POST http://127.0.0.1:5000/api/analysis/pollution \
+  -H "Content-Type: application/json" \
+  -d '{"pollutant": "pm25", "city": "Metropolis"}'
+```
+
+**Response (HTTP 200 OK):**
+```json
+{
+  "success": true,
+  "message": "Pollution analysis metrics computed.",
+  "data": {
+    "count": 51,
+    "average": 52.8,
+    "median": 48.5,
+    "max": 132.0,
+    "maxLocation": "Industrial Zone North (Metropolis)",
+    "maxDate": "2024-12-20",
+    "min": 13.6,
+    "minLocation": "Suburbia East (Metropolis)",
+    "minDate": "2024-04-20",
+    "unit": "µg/m³",
+    "pollutant": "pm25",
+    "pollutantName": "PM2.5 (Fine Particulates)",
+    "guidelineThreshold": 15.0,
+    "stationAverages": [
+      {
+        "location": "Industrial Zone North",
+        "city": "Metropolis",
+        "average": 87.6,
+        "samples": 17,
+        "max": 132.0,
+        "min": 54.8
+      },
+      {
+        "location": "Downtown Central",
+        "city": "Metropolis",
+        "average": 48.2,
+        "samples": 17,
+        "max": 72.4,
+        "min": 28.4
+      },
+      {
+        "location": "Suburbia East",
+        "city": "Metropolis",
+        "average": 22.5,
+        "samples": 17,
+        "max": 33.0,
+        "min": 13.6
+      }
+    ]
+  }
+}
+```
+
+### 3. Particulate Correlation (PM2.5 vs PM10)
+**Request:**
+```bash
+curl -X GET "http://127.0.0.1:5000/api/charts/data?type=scatter"
+```
+
+**Response (HTTP 200 OK):**
+```json
+{
+  "success": true,
+  "message": "Scatter chart data generated.",
+  "data": {
+    "correlationR": 0.98,
+    "datasets": [
+      {
+        "label": "Particulate Correlation (PM2.5 vs PM10, r = 0.98)",
+        "data": [
+          {"x": 42.5, "y": 68.2},
+          {"x": 78.3, "y": 135.0},
+          {"x": 18.2, "y": 32.4}
+        ],
+        "backgroundColor": "rgba(16, 185, 129, 0.65)",
+        "borderColor": "#059669"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 🔒 Security & Reliability Best Practices
+
+1. **Path Traversal Protection:** All dataset operations use UUID-based dataset identifiers (`str(uuid.uuid4())`), preventing arbitrary file path manipulation.
+2. **File Validation:** Files are verified for both extension (`.csv`) and parseable tabular structure via multi-encoding Pandas decoding.
+3. **Restricted Payload Size:** Uploads are strictly capped at 16 MB (`MAX_CONTENT_LENGTH`).
+4. **Safe Error Handling:** Centralized Flask error handlers intercept all exceptions, preventing server stack traces from leaking to API clients.
+5. **Non-Destructive Processing:** The raw uploaded file is retained unmodified; cleaning pipelines generate new cleaned outputs in `backend/outputs/`.
+
+---
+
+## 👨‍💻 Deliverable Summary
+
+- [x] Complete Flask REST API backend (`backend/app.py`).
+- [x] Modular services: `data_loader.py`, `data_cleaner.py`, `analytics.py`, `chart_service.py`, `report_service.py`.
+- [x] Unified JSON response envelope and centralized error handling.
+- [x] Header normalization supporting heterogeneous column naming variations.
+- [x] Data quality audit distinguishing missing values vs recorded zeros vs unparseable readings.
+- [x] Configurable cleaning pipeline (deduplication, date parsing, clamping, median imputation).
+- [x] Parametric descriptive analytics engine with WHO guideline thresholds.
+- [x] Four Chart.js endpoints (Line, Bar, Histogram, Scatter with Pearson's \(r\)).
+- [x] Cleaned CSV and executive text report export downloads.
+- [x] Comprehensive 12-case test suite (`backend/tests/test_backend.py`) — **100% Passing**.
+- [x] Seamless integration with the existing frontend.

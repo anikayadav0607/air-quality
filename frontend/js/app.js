@@ -227,6 +227,17 @@ const App = {
             if (result.connected) {
                 badge.className = 'badge bg-success-subtle text-success border border-success-subtle px-3 py-2 cursor-pointer';
                 badgeText.innerHTML = '<i class="fa-solid fa-circle-check text-success me-1"></i> Flask Backend Live (Port 5000)';
+
+                // Mark badges as Live Backend Data
+                document.querySelectorAll('.demo-pill').forEach(pill => {
+                    pill.innerHTML = '<i class="fa-solid fa-server me-1"></i> FLASK LIVE DATA';
+                    pill.className = 'badge bg-success-subtle text-success border border-success-subtle py-1 px-2';
+                });
+
+                // Refresh dashboard components with live data
+                await this.loadDashboardMetrics();
+                await this.renderPreviewTable();
+                await this.updateAnalysisMetrics();
             } else {
                 badge.className = 'badge bg-warning-subtle text-dark border border-warning-subtle px-3 py-2 cursor-pointer';
                 badgeText.innerHTML = '<i class="fa-solid fa-circle-pause text-warning me-1"></i> Demo Mode (Flask Disconnected)';
@@ -355,17 +366,42 @@ const App = {
                     progressText.textContent = `Processing file: ${pct}%`;
                 });
 
-                alertBox.className = 'alert alert-success d-flex align-items-center mt-3 shadow-sm';
-                alertBox.innerHTML = `
-                    <i class="fa-solid fa-circle-check fs-4 me-3 text-success"></i>
-                    <div>
-                        <strong class="d-block">Upload Complete (Frontend Preview Mode)</strong>
-                        <span>"${res.filename}" is loaded into local memory. In Part 2, real pandas validation will execute on the Flask backend.</span>
-                    </div>
-                `;
-                alertBox.classList.remove('d-none');
+                if (!res.isDemo) {
+                    alertBox.className = 'alert alert-success d-flex align-items-center mt-3 shadow-sm';
+                    alertBox.innerHTML = `
+                        <i class="fa-solid fa-circle-check fs-4 me-3 text-success"></i>
+                        <div>
+                            <strong class="d-block">Upload & Ingestion Complete (Flask Backend Active)</strong>
+                            <span>"${res.filename}" processed with Pandas. <strong>${res.totalRecords} records</strong> and <strong>${res.locationsCount} locations</strong> registered on server.</span>
+                        </div>
+                    `;
+                    alertBox.classList.remove('d-none');
+                    this.showToast(`"${res.filename}" ingested and active on backend!`, 'success');
 
-                this.showToast('Dataset loaded successfully in simulation mode.', 'success');
+                    // Update live badges
+                    document.querySelectorAll('.demo-pill').forEach(pill => {
+                        pill.innerHTML = `<i class="fa-solid fa-server me-1"></i> LIVE DATA: ${res.filename}`;
+                        pill.className = 'badge bg-success-subtle text-success border border-success-subtle py-1 px-2';
+                    });
+
+                    // Refresh all views with live backend data
+                    await this.loadDashboardMetrics();
+                    this.state.previewParams.page = 1;
+                    await this.renderPreviewTable();
+                    await this.updateAnalysisMetrics();
+                    await window.ChartsManager.initAllCharts();
+                } else {
+                    alertBox.className = 'alert alert-success d-flex align-items-center mt-3 shadow-sm';
+                    alertBox.innerHTML = `
+                        <i class="fa-solid fa-circle-check fs-4 me-3 text-success"></i>
+                        <div>
+                            <strong class="d-block">Upload Complete (Frontend Preview Mode)</strong>
+                            <span>"${res.filename}" is loaded into local memory. Start Flask backend for server-side processing.</span>
+                        </div>
+                    `;
+                    alertBox.classList.remove('d-none');
+                    this.showToast('Dataset loaded successfully in simulation mode.', 'success');
+                }
             } catch (err) {
                 alertBox.className = 'alert alert-danger d-flex align-items-center mt-3 shadow-sm';
                 alertBox.innerHTML = `
@@ -649,19 +685,26 @@ const App = {
             cleanDatasetBtn.disabled = true;
             cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Executing Cleaning Pipeline...';
 
-            await new Promise(r => setTimeout(r, 1000));
+            const cleanRes = await window.ApiService.cleanDataset({ impute_method: 'median' });
 
-            // Visual simulation of cleaned status
-            document.getElementById('cleaningResultBanner').classList.remove('d-none');
-            document.getElementById('cleanAuditMissing').textContent = '0 (Imputed)';
-            document.getElementById('cleanAuditDuplicates').textContent = '0 (Removed)';
-            document.getElementById('cleanAuditInvalidNumeric').textContent = '0 (Corrected)';
-            document.getElementById('cleanHealthScore').textContent = '99.8%';
+            // Display results
+            const banner = document.getElementById('cleaningResultBanner');
+            banner.classList.remove('d-none');
+            const summarySpan = banner.querySelector('span');
+            if (summarySpan && cleanRes.actions) {
+                summarySpan.textContent = cleanRes.actions.join(' ');
+            }
+
+            document.getElementById('cleanAuditMissing').textContent = `${cleanRes.metrics.imputedValues || 0} (Imputed)`;
+            document.getElementById('cleanAuditDuplicates').textContent = `${cleanRes.metrics.duplicatesRemoved || 0} (Removed)`;
+            document.getElementById('cleanAuditInvalidNumeric').textContent = `${cleanRes.metrics.clampedValues || 0} (Corrected)`;
+            document.getElementById('cleanHealthScore').textContent = `${cleanRes.metrics.healthScore || 99.8}%`;
 
             cleanDatasetBtn.disabled = false;
-            cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Dataset Cleaned (Demonstration)';
+            cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Dataset Cleaned';
 
-            this.showToast('Demonstration: Missing values imputed with median, duplicates purged.', 'success');
+            this.showToast('Cleaning pipeline executed successfully.', 'success');
+            await this.renderPreviewTable();
         });
 
         downloadCleanedBtn?.addEventListener('click', async () => {
@@ -765,10 +808,16 @@ const App = {
     // =========================================================================
     initReportsHandlers() {
         const exportReportBtn = document.getElementById('btnExportReport');
+        const exportTextReportBtn = document.getElementById('btnExportTextReport');
         const downloadCleanedBtn = document.getElementById('btnReportDownloadCleaned');
 
         exportReportBtn?.addEventListener('click', async () => {
             await window.ApiService.exportReport('pdf');
+        });
+
+        exportTextReportBtn?.addEventListener('click', async () => {
+            await window.ApiService.exportReport('txt');
+            this.showToast('Downloading executive text report from backend...', 'info');
         });
 
         downloadCleanedBtn?.addEventListener('click', async () => {
