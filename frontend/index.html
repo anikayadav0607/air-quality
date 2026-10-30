@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality and Pollution Pattern Analysis (DA-013)</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="appLayout">
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+        <!-- COLLAPSIBLE SIDEBAR -->
+        <aside id="appSidebar">
+            <!-- Sidebar Header / Logo -->
+            <div class="sidebar-header">
+                <div class="brand-logo-icon">
+                    <i class="fa-solid fa-wind"></i>
+                </div>
+                <div class="brand-title-wrap">
+                    <h1 class="brand-name">Air Quality Analytics</h1>
+                    <span class="brand-badge"><i class="fa-solid fa-leaf me-1"></i>CODE: DA-013</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="sidebar-nav-container">
+                <div class="nav-section-label">Core Navigation</div>
+                <ul class="sidebar-nav-list">
+                    <li>
+                        <a href="#dashboard" class="nav-link-item active">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span class="nav-item-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#upload" class="nav-link-item">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span class="nav-item-text">Upload Dataset</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#preview" class="nav-link-item">
+                            <i class="fa-solid fa-table-cells"></i>
+                            <span class="nav-item-text">Data Preview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#cleaning" class="nav-link-item">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span class="nav-item-text">Data Cleaning</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-section-label">Environmental Insights</div>
+                <ul class="sidebar-nav-list">
+                    <li>
+                        <a href="#analysis" class="nav-link-item">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="nav-item-text">Pollution Analysis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#charts" class="nav-link-item">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span class="nav-item-text">Charts & Visuals</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#reports" class="nav-link-item">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="nav-item-text">Reports</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#about" class="nav-link-item">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span class="nav-item-text">About Project</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer-card">
+                <div class="sidebar-status-box">
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="fw-bold text-secondary">Dataset Status</span>
+                        <span class="badge bg-success-subtle text-success">Active</span>
+                    </div>
+                    <div class="text-muted small">Sample 2024 Records Loaded</div>
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-success" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WRAPPER -->
+        <div id="mainContentWrapper">
+            <!-- TOPBAR -->
+            <header id="topNavbar">
+                <div class="topbar-left">
+                    <button id="sidebarToggleBtn" class="toggle-sidebar-btn" title="Toggle Sidebar" aria-label="Toggle Navigation">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 id="currentViewTitle" class="breadcrumb-title">Dashboard Overview</h2>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Backend Connectivity Badge -->
+                    <div id="backendStatusBadge" class="badge bg-warning-subtle text-dark border border-warning-subtle px-3 py-2 cursor-pointer" title="Click for Flask Backend connection details">
+                        <span id="backendStatusText"><i class="fa-solid fa-circle-pause text-warning me-1"></i> Demo Mode (Flask Disconnected)</span>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggleBtn" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 rounded-3" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon text-primary"></i>
+                        <span class="theme-label small fw-semibold d-none d-sm-inline">Dark Mode</span>
+                    </button>
+
+                    <!-- User Profile Placeholder -->
+                    <div class="d-flex align-items-center gap-2 ps-2 border-start">
+                        <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-size: 0.85rem;">
+                            EA
+                        </div>
+                        <div class="d-none d-md-block text-start" style="line-height: 1.1;">
+                            <div class="fw-bold small">Env. Analyst</div>
+                            <small class="text-muted" style="font-size: 0.72rem;">Academic Research</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- APP CONTENT CONTAINER -->
+            <main class="app-content-container">
+
+                <!-- ========================================================
+                     VIEW 1: DASHBOARD OVERVIEW
+                     ======================================================== -->
+                <section id="view-dashboard" class="app-view">
+                    <!-- Welcome Hero Banner -->
+                    <div class="analytics-card mb-4" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(2, 132, 199, 0.08)); border-color: rgba(16, 185, 129, 0.2);">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Environmental Analytics</span>
+                                    <span class="demo-pill"><i class="fa-solid fa-flask"></i> DEMO DATA ACTIVE</span>
+                                </div>
+                                <h3 class="fw-bold mb-2">Air Quality & Pollution Pattern Analysis</h3>
+                                <p class="text-secondary mb-3">
+                                    Welcome to project <strong>DA-013</strong>. This platform helps environmental analysts and students examine ambient pollutant dynamics, compare atmospheric observations across monitoring stations, and uncover temporal pollution patterns.
+                                </p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="#upload" class="btn btn-brand-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload Dataset</a>
+                                    <a href="#charts" class="btn btn-outline-secondary btn-sm bg-white"><i class="fa-solid fa-chart-line me-2"></i>Explore Visualizations</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 text-center text-lg-end mt-3 mt-lg-0">
+                                <div class="p-3 bg-white rounded-3 shadow-sm border d-inline-block text-start" style="min-width: 220px;">
+                                    <div class="small text-muted fw-semibold">SYSTEM INTEGRITY SCORE</div>
+                                    <div class="d-flex align-items-baseline gap-2 mt-1">
+                                        <span class="fs-2 fw-bolder text-success">96.6%</span>
+                                        <span class="badge bg-success-subtle text-success">Optimal</span>
+                                    </div>
+                                    <div class="small text-muted mt-1"><i class="fa-solid fa-check-double text-success me-1"></i>Schema checks verified</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Summary KPI Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card kpi-card">
+                                <div class="kpi-icon-wrap kpi-icon-green">
+                                    <i class="fa-solid fa-database"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Total Records</div>
+                                    <div id="metricTotalRecords" class="kpi-value">2,450</div>
+                                    <div class="kpi-meta"><span class="text-success fw-semibold"><i class="fa-solid fa-arrow-up"></i> Verified</span> demo samples</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card kpi-card">
+                                <div class="kpi-icon-wrap kpi-icon-blue">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Monitoring Locations</div>
+                                    <div id="metricLocations" class="kpi-value">5 Stations</div>
+                                    <div class="kpi-meta">Across 3 geographical sectors</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card kpi-card">
+                                <div class="kpi-icon-wrap kpi-icon-amber">
+                                    <i class="fa-solid fa-smog"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Pollutants Monitored</div>
+                                    <div id="metricPollutants" class="kpi-value">5 Species</div>
+                                    <div class="kpi-meta">PM2.5, PM10, NO2, SO2, O3</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card kpi-card">
+                                <div class="kpi-icon-wrap kpi-icon-teal">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <div>
+                                    <div class="kpi-label">Date Range</div>
+                                    <div id="metricDateRange" class="kpi-value fs-6">2024-01-01 ~ 2024-12-31</div>
+                                    <div class="kpi-meta">Continuous annual observations</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Insights & Highlights -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-lg-7">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h4 class="card-title-styled"><i class="fa-solid fa-gauge-high text-primary"></i> Station Air Quality Indices (AQI)</h4>
+                                        <p class="card-subtitle-styled">Current computed status across monitoring nodes</p>
+                                    </div>
+                                    <span class="demo-pill">DEMO DATA</span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold">Downtown Central</span>
+                                                <span class="badge bg-warning text-dark">Moderate</span>
+                                            </div>
+                                            <div class="small text-muted mb-2">Metropolis Urban Core</div>
+                                            <div class="d-flex justify-content-between small text-secondary">
+                                                <span>PM2.5: <strong>42.5 µg/m³</strong></span>
+                                                <span>AQI: <strong>118</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold">Industrial Zone North</span>
+                                                <span class="badge bg-danger text-white">Unhealthy</span>
+                                            </div>
+                                            <div class="small text-muted mb-2">Manufacturing District</div>
+                                            <div class="d-flex justify-content-between small text-secondary">
+                                                <span>PM2.5: <strong>78.3 µg/m³</strong></span>
+                                                <span>AQI: <strong>163</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold">Valley Eco-Reserve</span>
+                                                <span class="badge bg-success text-white">Good</span>
+                                            </div>
+                                            <div class="small text-muted mb-2">Green Valley Natural Park</div>
+                                            <div class="d-flex justify-content-between small text-secondary">
+                                                <span>PM2.5: <strong>11.4 µg/m³</strong></span>
+                                                <span>AQI: <strong>48</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 rounded-3 border bg-light">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="fw-bold">Harbor Portside</span>
+                                                <span class="badge text-white" style="background-color: #f97316;">Sensitive</span>
+                                            </div>
+                                            <div class="small text-muted mb-2">Harbor City Logistics Hub</div>
+                                            <div class="d-flex justify-content-between small text-secondary">
+                                                <span>PM2.5: <strong>55.0 µg/m³</strong></span>
+                                                <span>AQI: <strong>149</strong></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h4 class="card-title-styled"><i class="fa-solid fa-circle-exclamation text-warning"></i> Key Environmental Findings</h4>
+                                        <p class="card-subtitle-styled">Summary derived from current dataset records</p>
+                                    </div>
+                                    <span class="demo-pill">DEMO DATA</span>
+                                </div>
+                                <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fa-solid fa-triangle-exclamation text-danger mt-1"></i>
+                                        <span class="small"><strong>Industrial Hotspots:</strong> Industrial Zone North consistently exhibits PM10 concentrations exceeding 150 µg/m³, correlating with factory shifts.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fa-solid fa-sun text-warning mt-1"></i>
+                                        <span class="small"><strong>Photochemical Smog Peak:</strong> Ground-level Ozone (O3) peaks during summer months (June–July) at 79.5 ppb due to solar radiation.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fa-solid fa-snowflake text-primary mt-1"></i>
+                                        <span class="small"><strong>Winter Temperature Inversion:</strong> Fine particulate matter (PM2.5) readings spike in November/December due to stagnant atmospheric layers.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fa-solid fa-shield-heart text-success mt-1"></i>
+                                        <span class="small"><strong>Clean Baseline:</strong> Valley Park Eco-Reserve maintains compliance with WHO particulate guidelines over 92% of the observed year.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 2: DATASET UPLOAD
+                     ======================================================== -->
+                <section id="view-upload" class="app-view d-none">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10 col-xl-8">
+                            <div class="analytics-card mb-4">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h4 class="card-title-styled"><i class="fa-solid fa-cloud-arrow-up text-primary"></i> Upload Air Quality Dataset</h4>
+                                        <p class="card-subtitle-styled">Import comma-separated (.csv) measurements for exploratory analysis</p>
+                                    </div>
+                                    <span class="badge bg-secondary-subtle text-secondary">CSV Format Only</span>
+                                </div>
+
+                                <!-- Drag & Drop Zone -->
+                                <div id="csvDropZone" class="upload-dropzone">
+                                    <input type="file" id="csvFileInput" class="d-none" accept=".csv">
+                                    <div class="upload-icon-circle">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-1">Drag and drop your CSV dataset here</h5>
+                                    <p class="text-muted small mb-3">Expected schema: Date, City, Monitoring_Location, PM2.5, PM10, NO2, SO2, O3</p>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button id="btnBrowseFile" type="button" class="btn btn-brand-primary btn-sm">
+                                            <i class="fa-regular fa-folder-open me-2"></i>Browse Files
+                                        </button>
+                                        <button id="btnLoadSamplePreset" type="button" class="btn btn-outline-secondary btn-sm bg-white" title="Quickly test with pre-packaged sample data">
+                                            <i class="fa-solid fa-wand-magic-sparkles me-2 text-warning"></i>Load Sample Data
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Selected File Info Card -->
+                                <div id="selectedFileCard" class="p-3 border rounded-3 bg-light mt-3 d-none">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="fa-solid fa-file-csv fs-1 text-success"></i>
+                                            <div>
+                                                <div id="selectedFileName" class="fw-bold">filename.csv</div>
+                                                <div id="selectedFileSize" class="text-muted small">0 KB</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button id="btnRemoveFile" type="button" class="btn btn-outline-danger btn-sm">
+                                                <i class="fa-solid fa-trash me-1"></i>Remove
+                                            </button>
+                                            <button id="btnUploadConfirm" type="button" class="btn btn-brand-primary btn-sm">
+                                                <i class="fa-solid fa-upload me-1"></i>Simulate Upload
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Bar -->
+                                    <div id="uploadProgressContainer" class="mt-3 d-none">
+                                        <div class="d-flex justify-content-between small text-muted mb-1">
+                                            <span id="uploadProgressText">Processing file: 0%</span>
+                                            <span>Validation check</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Result Alert -->
+                                    <div id="uploadResultAlert" class="alert d-none mt-3" role="alert"></div>
+                                </div>
+
+                                <!-- Architectural Notice -->
+                                <div class="mt-4 p-3 bg-light-subtle rounded-3 border">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <i class="fa-solid fa-circle-info text-primary"></i>
+                                        <strong class="small">Part 1 Frontend Simulation Architecture:</strong>
+                                    </div>
+                                    <p class="text-muted small mb-0">
+                                        File uploads are validated and simulated in the browser environment. In Part 2, this action will stream the multipart/form-data directly to the Flask endpoint <code>POST http://127.0.0.1:5000/api/upload</code> for server-side Pandas processing.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 3: DATA PREVIEW
+                     ======================================================== -->
+                <section id="view-preview" class="app-view d-none">
+                    <div class="analytics-card">
+                        <div class="card-header-styled flex-wrap gap-2">
+                            <div>
+                                <h4 class="card-title-styled"><i class="fa-solid fa-table-cells text-primary"></i> Data Preview & Exploration</h4>
+                                <p class="card-subtitle-styled">Inspect recorded air quality measurements with search, sorting, and pagination</p>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="demo-pill">DEMO DATA</span>
+                                <button id="btnSimulateLoading" type="button" class="btn btn-sm btn-outline-secondary" title="Test loading spinner state">
+                                    <i class="fa-solid fa-spinner me-1"></i>Simulate Loading
+                                </button>
+                                <button id="btnSimulateEmpty" type="button" class="btn btn-sm btn-outline-secondary" title="Test empty table state">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>Simulate Empty
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Filter & Search Toolbar -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-4">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                                    <input type="text" id="tableSearchInput" class="form-control" placeholder="Search by city, station, or date...">
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <select id="previewCityFilter" class="form-select form-select-sm">
+                                    <option value="All">All Cities</option>
+                                    <option value="Metropolis">Metropolis</option>
+                                    <option value="Harbor City">Harbor City</option>
+                                    <option value="Green Valley">Green Valley</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <select id="previewLocationFilter" class="form-select form-select-sm">
+                                    <option value="All">All Monitoring Stations</option>
+                                    <option value="Downtown Central">Downtown Central</option>
+                                    <option value="Industrial Zone North">Industrial Zone North</option>
+                                    <option value="Suburbia East">Suburbia East</option>
+                                    <option value="Harbor Portside">Harbor Portside</option>
+                                    <option value="Valley Park Eco-Reserve">Valley Park Eco-Reserve</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="previewLimitSelect" class="form-select form-select-sm">
+                                    <option value="10">10 rows</option>
+                                    <option value="25">25 rows</option>
+                                    <option value="50">50 rows</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Responsive Table -->
+                        <div class="table-responsive border rounded-3">
+                            <table id="previewTable" class="table custom-analytics-table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable-col" data-sort="date">Date <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="city">City <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="location">Monitoring Location <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="pm25">PM2.5 (µg/m³) <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="pm10">PM10 (µg/m³) <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="no2">NO2 (ppb) <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="so2">SO2 (ppb) <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th class="sortable-col" data-sort="o3">O3 (ppb) <i class="fa-solid fa-sort sort-icon text-muted opacity-50 ms-1"></i></th>
+                                        <th>AQI Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody">
+                                    <!-- Dynamic rows injected by app.js -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Empty State View -->
+                        <div id="previewEmptyState" class="text-center py-5 d-none">
+                            <div class="text-muted mb-2"><i class="fa-solid fa-folder-open fs-1"></i></div>
+                            <h5 class="fw-bold">No Records Found</h5>
+                            <p class="text-muted small mb-0">Try adjusting your search criteria or reset your filters.</p>
+                        </div>
+
+                        <!-- Loading State Spinner -->
+                        <div id="previewLoadingState" class="text-center py-5 d-none">
+                            <div class="spinner-border text-primary mb-2" role="status"></div>
+                            <div class="fw-semibold small text-muted">Retrieving environmental measurements...</div>
+                        </div>
+
+                        <!-- Table Pagination Bar -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3 pt-2">
+                            <div id="previewPaginationInfo" class="small text-muted">Showing 1 to 10 of 55 entries</div>
+                            <nav aria-label="Table Navigation">
+                                <ul id="previewPagination" class="pagination pagination-sm mb-0">
+                                    <!-- Dynamic page links -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 4: DATA CLEANING
+                     ======================================================== -->
+                <section id="view-cleaning" class="app-view d-none">
+                    <div class="analytics-card mb-4">
+                        <div class="card-header-styled flex-wrap gap-2">
+                            <div>
+                                <h4 class="card-title-styled"><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Data Quality Audit & Cleaning Panel</h4>
+                                <p class="card-subtitle-styled">Identify missing values, duplicates, out-of-range sensor readings, and timestamp irregularities</p>
+                            </div>
+                            <span class="demo-pill">DEMONSTRATION PANEL</span>
+                        </div>
+
+                        <!-- Quality Audit KPI Cards -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-semibold">MISSING VALUES</div>
+                                    <div id="cleanAuditMissing" class="fs-3 fw-bold text-danger mt-1">84</div>
+                                    <div class="small text-muted">3.4% of total sensor rows</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-semibold">DUPLICATE RECORDS</div>
+                                    <div id="cleanAuditDuplicates" class="fs-3 fw-bold text-warning mt-1">12</div>
+                                    <div class="small text-muted">0.5% duplicate timestamps</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-semibold">INVALID NUMERICS</div>
+                                    <div id="cleanAuditInvalidNumeric" class="fs-3 fw-bold text-danger mt-1">7</div>
+                                    <div class="small text-muted">Negative or extreme outliers</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-semibold">INVALID DATES</div>
+                                    <div id="cleanAuditInvalidDates" class="fs-3 fw-bold text-success mt-1">0</div>
+                                    <div class="small text-muted">100% compliant ISO-8601</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cleaned State Success Banner (Hidden by default) -->
+                        <div id="cleaningResultBanner" class="alert alert-success d-flex align-items-center gap-3 mb-4 d-none shadow-sm">
+                            <i class="fa-solid fa-circle-check fs-3 text-success"></i>
+                            <div>
+                                <strong class="d-block">Demonstrative Cleaning Complete</strong>
+                                <span class="small">12 duplicate records removed, 84 missing values imputed via median, and 7 negative sensor readings clamped to 0.0. Overall health score updated to 99.8%.</span>
+                            </div>
+                        </div>
+
+                        <!-- Rules and Columns Breakdown Table -->
+                        <h6 class="fw-bold mb-2">Column-level Validation Rules & Strategies</h6>
+                        <div class="table-responsive border rounded-3 mb-4">
+                            <table class="table custom-analytics-table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Target Feature</th>
+                                        <th>Missing Count</th>
+                                        <th>Validation Constraint</th>
+                                        <th>Resolution Strategy</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">PM2.5</td>
+                                        <td><span class="badge bg-danger-subtle text-danger">26 values</span></td>
+                                        <td>0.0 - 500.0 µg/m³</td>
+                                        <td>Impute using temporal station median</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">PM10</td>
+                                        <td><span class="badge bg-danger-subtle text-danger">31 values</span></td>
+                                        <td>0.0 - 1000.0 µg/m³</td>
+                                        <td>Impute using temporal station median</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">NO2</td>
+                                        <td><span class="badge bg-warning-subtle text-dark">14 values</span></td>
+                                        <td>0.0 - 300.0 ppb</td>
+                                        <td>Linear time-series interpolation</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">SO2</td>
+                                        <td><span class="badge bg-warning-subtle text-dark">8 values</span></td>
+                                        <td>0.0 - 200.0 ppb</td>
+                                        <td>Linear time-series interpolation</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">O3</td>
+                                        <td><span class="badge bg-warning-subtle text-dark">5 values</span></td>
+                                        <td>0.0 - 300.0 ppb</td>
+                                        <td>Forward-fill last valid hourly reading</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Cleaning Actions -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <button id="btnCheckDataQuality" type="button" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa-solid fa-shield-halved me-2"></i>Check Data Quality
+                            </button>
+                            <button id="btnCleanDataset" type="button" class="btn btn-brand-primary btn-sm">
+                                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Clean Dataset
+                            </button>
+                            <button id="btnDownloadCleanedCsv" type="button" class="btn btn-outline-success btn-sm">
+                                <i class="fa-solid fa-download me-2"></i>Download Cleaned CSV
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 5: POLLUTION ANALYSIS
+                     ======================================================== -->
+                <section id="view-analysis" class="app-view d-none">
+                    <!-- Filter Controls Card -->
+                    <div class="analytics-card mb-4">
+                        <div class="card-header-styled">
+                            <div>
+                                <h4 class="card-title-styled"><i class="fa-solid fa-filter text-primary"></i> Descriptive Pollution Analysis Filters</h4>
+                                <p class="card-subtitle-styled">Filter recorded pollutant concentrations across dates, regions, and specific pollutant types</p>
+                            </div>
+                            <span class="demo-pill">DEMO DATA</span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6 col-lg-2">
+                                <label class="form-label small fw-bold text-muted">START DATE</label>
+                                <input type="date" id="filterStartDate" class="form-control form-control-sm" value="2024-01-01">
+                            </div>
+                            <div class="col-sm-6 col-lg-2">
+                                <label class="form-label small fw-bold text-muted">END DATE</label>
+                                <input type="date" id="filterEndDate" class="form-control form-control-sm" value="2024-12-31">
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <label class="form-label small fw-bold text-muted">CITY</label>
+                                <select id="filterCity" class="form-select form-select-sm">
+                                    <option value="All">All Cities</option>
+                                    <option value="Metropolis">Metropolis</option>
+                                    <option value="Harbor City">Harbor City</option>
+                                    <option value="Green Valley">Green Valley</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <label class="form-label small fw-bold text-muted">MONITORING LOCATION</label>
+                                <select id="filterLocation" class="form-select form-select-sm">
+                                    <option value="All">All Monitoring Locations</option>
+                                    <option value="Downtown Central">Downtown Central</option>
+                                    <option value="Industrial Zone North">Industrial Zone North</option>
+                                    <option value="Suburbia East">Suburbia East</option>
+                                    <option value="Harbor Portside">Harbor Portside</option>
+                                    <option value="Valley Park Eco-Reserve">Valley Park Eco-Reserve</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-lg-2">
+                                <label class="form-label small fw-bold text-muted">POLLUTANT</label>
+                                <select id="filterPollutant" class="form-select form-select-sm">
+                                    <option value="pm25">PM2.5 (Fine)</option>
+                                    <option value="pm10">PM10 (Coarse)</option>
+                                    <option value="no2">NO2 (Dioxide)</option>
+                                    <option value="so2">SO2 (Sulfur)</option>
+                                    <option value="o3">O3 (Ozone)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+                            <button id="btnResetAnalysisFilters" type="button" class="btn btn-outline-secondary btn-sm">
+                                <i class="fa-solid fa-rotate-left me-1"></i>Reset Filters
+                            </button>
+                            <button id="btnApplyAnalysisFilters" type="button" class="btn btn-brand-primary btn-sm">
+                                <i class="fa-solid fa-check me-1"></i>Apply Filters
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Computed Analysis Metric Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted fw-bold">AVERAGE LEVEL</span>
+                                    <i class="fa-solid fa-chart-simple text-primary"></i>
+                                </div>
+                                <div id="analysisAvgVal" class="fs-3 fw-bold text-primary mt-1">45.2 µg/m³</div>
+                                <div class="small text-muted">Mean across filtered samples</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted fw-bold">MAXIMUM RECORDED</span>
+                                    <i class="fa-solid fa-arrow-up-right-dots text-danger"></i>
+                                </div>
+                                <div id="analysisMaxVal" class="fs-3 fw-bold text-danger mt-1">132.0 µg/m³</div>
+                                <div id="analysisMaxMeta" class="small text-muted text-truncate">Industrial Zone on 2024-12-20</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted fw-bold">MINIMUM RECORDED</span>
+                                    <i class="fa-solid fa-arrow-down-left-dots text-success"></i>
+                                </div>
+                                <div id="analysisMinVal" class="fs-3 fw-bold text-success mt-1">8.0 µg/m³</div>
+                                <div id="analysisMinMeta" class="small text-muted text-truncate">Valley Reserve on 2024-04-20</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xl-3">
+                            <div class="analytics-card">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted fw-bold">AVAILABLE MEASUREMENTS</span>
+                                    <i class="fa-solid fa-list-check text-secondary"></i>
+                                </div>
+                                <div id="analysisCountVal" class="fs-3 fw-bold text-secondary mt-1">55 readings</div>
+                                <div class="small text-muted">Matching selected query</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Station Breakdown Table & WHO Guidelines -->
+                    <div class="row g-4">
+                        <div class="col-lg-7">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-building text-primary"></i> Station Breakdown Comparison</h5>
+                                        <p class="card-subtitle-styled">Filtered pollutant averages grouped by monitoring location</p>
+                                    </div>
+                                    <span class="demo-pill">DEMO DATA</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table custom-analytics-table align-middle mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Location</th>
+                                                <th>City</th>
+                                                <th>Average</th>
+                                                <th>Samples</th>
+                                                <th style="width: 140px;">Relative Intensity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisStationTableBody">
+                                            <!-- Dynamically filled -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-book-bookmark text-primary"></i> Environmental Benchmark Reference</h5>
+                                        <p class="card-subtitle-styled">WHO & National Ambient Air Quality standard guidelines</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column gap-2 small">
+                                    <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center">
+                                        <span><strong>PM2.5 (24h Guideline):</strong></span>
+                                        <span class="badge bg-success">15 µg/m³</span>
+                                    </div>
+                                    <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center">
+                                        <span><strong>PM10 (24h Guideline):</strong></span>
+                                        <span class="badge bg-success">45 µg/m³</span>
+                                    </div>
+                                    <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center">
+                                        <span><strong>NO2 (24h Guideline):</strong></span>
+                                        <span class="badge bg-warning text-dark">25 ppb</span>
+                                    </div>
+                                    <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center">
+                                        <span><strong>SO2 (24h Guideline):</strong></span>
+                                        <span class="badge bg-warning text-dark">40 ppb</span>
+                                    </div>
+                                    <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center">
+                                        <span><strong>O3 (8h Seasonal):</strong></span>
+                                        <span class="badge bg-primary">50 ppb</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-muted" style="font-size: 0.76rem;">
+                                    *Reference benchmarks adapted from World Health Organization (WHO) Global Air Quality Guidelines (2021 update).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 6: CHARTS & VISUALIZATIONS
+                     ======================================================== -->
+                <section id="view-charts" class="app-view d-none">
+                    <!-- Global Visual Controls -->
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-0">Charts & Visualizations</h4>
+                            <p class="text-muted small mb-0">High-resolution interactive representations rendered via Chart.js</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="demo-pill"><i class="fa-solid fa-flask"></i> DEMO DATA ACTIVE</span>
+                            <div class="d-flex align-items-center gap-1">
+                                <label for="lineChartPollutantSelect" class="small fw-bold text-muted mb-0">Focus:</label>
+                                <select id="lineChartPollutantSelect" class="form-select form-select-sm" style="width: 140px;">
+                                    <option value="pm25">PM2.5</option>
+                                    <option value="pm10">PM10</option>
+                                    <option value="no2">NO2</option>
+                                    <option value="so2">SO2</option>
+                                    <option value="o3">O3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Charts Grid -->
+                    <div class="row g-4">
+                        <!-- Chart A: Line Chart -->
+                        <div class="col-lg-6">
+                            <div class="analytics-card">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-chart-line text-primary"></i> A. Pollutant Levels Over Time</h5>
+                                        <p class="card-subtitle-styled">Temporal trajectory comparing urban, industrial, and reserve sensors</p>
+                                    </div>
+                                    <div class="chart-header-actions">
+                                        <button class="btn-chart-action btn-download-chart" data-chart="line" title="Download PNG image">
+                                            <i class="fa-solid fa-download"></i> PNG
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container-box">
+                                    <canvas id="lineChartCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart B: Bar Chart -->
+                        <div class="col-lg-6">
+                            <div class="analytics-card">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-chart-column text-primary"></i> B. Cross-Location Comparison</h5>
+                                        <p class="card-subtitle-styled">Mean recorded levels of PM2.5, PM10, and NO2 across 5 stations</p>
+                                    </div>
+                                    <div class="chart-header-actions">
+                                        <button class="btn-chart-action btn-download-chart" data-chart="bar" title="Download PNG image">
+                                            <i class="fa-solid fa-download"></i> PNG
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container-box">
+                                    <canvas id="barChartCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart C: Histogram -->
+                        <div class="col-lg-6">
+                            <div class="analytics-card">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-chart-simple text-primary"></i> C. Distribution of Pollutant Readings</h5>
+                                        <p class="card-subtitle-styled">Frequency distribution across AQI health risk intervals</p>
+                                    </div>
+                                    <div class="chart-header-actions">
+                                        <button class="btn-chart-action btn-download-chart" data-chart="histogram" title="Download PNG image">
+                                            <i class="fa-solid fa-download"></i> PNG
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container-box">
+                                    <canvas id="histogramCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart D: Scatter Plot -->
+                        <div class="col-lg-6">
+                            <div class="analytics-card">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-braille text-primary"></i> D. PM2.5 vs PM10 Scatter Correlation</h5>
+                                        <p class="card-subtitle-styled">Investigating the particulate ratio correlation (r = 0.88)</p>
+                                    </div>
+                                    <div class="chart-header-actions">
+                                        <button class="btn-chart-action btn-download-chart" data-chart="scatter" title="Download PNG image">
+                                            <i class="fa-solid fa-download"></i> PNG
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chart-container-box">
+                                    <canvas id="scatterCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 7: REPORTS
+                     ======================================================== -->
+                <section id="view-reports" class="app-view d-none">
+                    <div class="analytics-card mb-4">
+                        <div class="card-header-styled flex-wrap gap-2">
+                            <div>
+                                <h4 class="card-title-styled"><i class="fa-solid fa-file-lines text-primary"></i> Environmental Analysis Executive Report</h4>
+                                <p class="card-subtitle-styled">Generated summary report for academic review and policy inspection</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button id="btnExportReport" type="button" class="btn btn-brand-primary btn-sm">
+                                    <i class="fa-solid fa-print me-1"></i>Export Report (PDF / Print)
+                                </button>
+                                <button id="btnReportDownloadCleaned" type="button" class="btn btn-outline-success btn-sm">
+                                    <i class="fa-solid fa-download me-1"></i>Download Cleaned CSV
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-light rounded-3 border mb-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-warning text-dark">FRONTEND DEMO PREVIEW</span>
+                                <span class="small text-muted">This report preview uses local sample data. In Part 2, automated PDF compilation will execute on the Flask backend.</span>
+                            </div>
+                        </div>
+
+                        <!-- Report Section 1: Dataset Summary -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">1. Dataset Summary & Scope</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Project Identification:</span>
+                                            <strong class="text-dark">DA-013 (Air Quality & Pollution Pattern)</strong>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Temporal Coverage:</span>
+                                            <strong class="text-dark">January 1, 2024 – December 31, 2024</strong>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Total Observation Rows:</span>
+                                            <strong class="text-dark">2,450 records</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Monitoring Stations:</span>
+                                            <strong class="text-dark">5 Active Sensors (Urban, Industrial, Suburb, Port, Eco-Reserve)</strong>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Target Atmospheric Analytes:</span>
+                                            <strong class="text-dark">PM2.5, PM10, NO2, SO2, O3</strong>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between px-0">
+                                            <span class="text-muted">Data Completeness Index:</span>
+                                            <strong class="text-success">96.6% (Verified)</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Section 2: Data Quality Summary -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">2. Data Quality Audit Findings</h5>
+                            <p class="small text-secondary mb-2">
+                                Pre-cleaning evaluation identified 103 minor anomalies across 2,450 data rows. All issues are categorized below:
+                            </p>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="p-3 border rounded-2 bg-light text-center">
+                                        <div class="fs-4 fw-bold text-secondary">84 Values (3.4%)</div>
+                                        <div class="small text-muted">Missing Sensor Measurements</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 border rounded-2 bg-light text-center">
+                                        <div class="fs-4 fw-bold text-secondary">12 Rows (0.5%)</div>
+                                        <div class="small text-muted">Exact Duplicate Rows</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-3 border rounded-2 bg-light text-center">
+                                        <div class="fs-4 fw-bold text-secondary">7 Values (0.3%)</div>
+                                        <div class="small text-muted">Negative Sensor Calibrations</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Section 3: Key Observations -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">3. Key Environmental Observations</h5>
+                            <ol class="small text-secondary d-flex flex-column gap-2 mb-0">
+                                <li><strong>Industrial Dominance:</strong> Industrial Zone North logged the highest annual mean concentrations for both PM10 (150.2 µg/m³) and PM2.5 (87.6 µg/m³), frequently crossing the 24-hour safe limits established by environmental authorities.</li>
+                                <li><strong>Particulate Correlation:</strong> Fine particulate matter (PM2.5) displays a strong linear correlation with coarse particulate matter (PM10) with an estimated correlation coefficient \(r = 0.88\), indicating common vehicular and industrial combustion origins.</li>
+                                <li><strong>Seasonal Inversion Peaks:</strong> Severe spikes in fine particulate readings occur in late November and December due to atmospheric thermal inversion trapping pollutants close to the ground.</li>
+                                <li><strong>Summer Ground Ozone:</strong> Ground-level Ozone reaches seasonal highs during July (79.5 ppb) triggered by solar ultraviolet catalysis of precursor volatile organics and nitrogen oxides.</li>
+                            </ol>
+                        </div>
+
+                        <!-- Mandatory Disclaimer -->
+                        <div class="disclaimer-card mt-4">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                                <strong class="small text-dark">Required Project Disclaimer:</strong>
+                            </div>
+                            <p class="small text-muted mb-0">
+                                This application presents descriptive analysis of recorded measurements. Missing values are not treated as zero, and comparisons must account for measurement units, monitoring locations, and data quality. The results do not establish pollution causes or provide medical conclusions.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================================
+                     VIEW 8: ABOUT PROJECT
+                     ======================================================== -->
+                <section id="view-about" class="app-view d-none">
+                    <div class="analytics-card mb-4">
+                        <div class="card-header-styled">
+                            <div>
+                                <h4 class="card-title-styled"><i class="fa-solid fa-circle-info text-primary"></i> About This Project</h4>
+                                <p class="card-subtitle-styled">Academic and technical documentation for DA-013</p>
+                            </div>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Environmental Analytics</span>
+                        </div>
+
+                        <!-- Project Metadata Grid -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-bold">PROJECT TITLE</div>
+                                    <div class="fw-bold text-primary mt-1">Air Quality and Pollution Pattern Analysis</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-bold">PROJECT CODE</div>
+                                    <div class="fw-bold text-primary mt-1">DA-013</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3 border rounded-3 bg-light">
+                                    <div class="small text-muted fw-bold">DOMAIN</div>
+                                    <div class="fw-bold text-primary mt-1">Environmental Analytics</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Purpose -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-2">Project Purpose & Scope</h5>
+                            <p class="text-secondary small leading-relaxed">
+                                The <strong>Air Quality and Pollution Pattern Analysis (DA-013)</strong> system analyses documented public air-quality measurements to compare pollutant levels over time and across monitoring locations. It is designed to assist environmental science students, municipal data analysts, and researchers in identifying severe pollution episodes, evaluating spatial gradients, and exploring statistical distributions among key atmospheric species (PM2.5, PM10, NO2, SO2, O3).
+                            </p>
+                        </div>
+
+                        <!-- Mandatory Project Disclaimer -->
+                        <div class="disclaimer-card mb-4">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="fa-solid fa-shield-halved text-primary fs-5"></i>
+                                <h6 class="fw-bold mb-0 text-primary">Scientific & Analytical Disclaimer</h6>
+                            </div>
+                            <p class="small text-secondary mb-0 fw-medium">
+                                "This application presents descriptive analysis of recorded measurements. Missing values are not treated as zero, and comparisons must account for measurement units, monitoring locations, and data quality. The results do not establish pollution causes or provide medical conclusions."
+                            </p>
+                        </div>
+
+                        <!-- Architecture & Roadmap -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">Two-Part Project Roadmap</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded-3 bg-light-subtle h-100">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <span class="fw-bold text-success"><i class="fa-solid fa-circle-check me-1"></i> Part 1 (Current Frontend)</span>
+                                            <span class="badge bg-success-subtle text-success">Completed</span>
+                                        </div>
+                                        <p class="small text-muted mb-2">
+                                            Modern, responsive UI/UX built with HTML5, CSS3, Bootstrap 5, Font Awesome, and Chart.js. Features an abstracted <code>api.js</code> service client that operates seamlessly with realistic mock data while disconnected.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded-3 bg-light-subtle h-100">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <span class="fw-bold text-primary"><i class="fa-solid fa-server me-1"></i> Part 2 (Future Backend)</span>
+                                            <span class="badge bg-primary-subtle text-primary">Next Step</span>
+                                        </div>
+                                        <p class="small text-muted mb-2">
+                                            Python Flask REST API with Pandas, NumPy, and Scikit-learn to handle real CSV processing, statistical calculations, outlier filtering, and persistent analysis.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technology Stack Details -->
+                        <div>
+                            <h6 class="fw-bold mb-2">Frontend Technology Stack</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-light text-dark border"><i class="fa-brands fa-html5 text-danger me-1"></i> HTML5 Semantic Structure</span>
+                                <span class="badge bg-light text-dark border"><i class="fa-brands fa-css3-alt text-primary me-1"></i> CSS3 & Custom Variables</span>
+                                <span class="badge bg-light text-dark border"><i class="fa-brands fa-bootstrap text-purple me-1"></i> Bootstrap 5.3 Responsive Grid</span>
+                                <span class="badge bg-light text-dark border"><i class="fa-brands fa-js text-warning me-1"></i> Vanilla ES6+ JavaScript</span>
+                                <span class="badge bg-light text-dark border"><i class="fa-solid fa-chart-line text-success me-1"></i> Chart.js 4.4 Data Visualizations</span>
+                                <span class="badge bg-light text-dark border"><i class="fa-solid fa-icons text-info me-1"></i> Font Awesome 6.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- BACKEND INFO MODAL -->
+    <div class="modal fade" id="backendInfoModal" tabindex="-1" aria-labelledby="backendInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold" id="backendInfoModalLabel">
+                        <i class="fa-solid fa-server text-primary me-2"></i>Backend Integration Status
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <div class="small text-muted fw-semibold">CONFIGURED API BASE URL</div>
+                        <code class="fs-6 text-primary">http://127.0.0.1:5000/api</code>
+                    </div>
+                    <p class="small text-secondary mb-3">
+                        This frontend is built with a separate <code>api.js</code> service client. In Part 1, since the Flask backend is not yet started, the application automatically operates with realistic local demo data.
+                    </p>
+                    <div class="small text-muted mb-3">
+                        When you implement and start the Flask backend in Part 2, click <strong>Retest Connection</strong> below to connect instantly.
+                    </div>
+                </div>
+                <div class="modal-footer border-top">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button id="btnPingBackend" type="button" class="btn btn-brand-primary btn-sm">
+                        <i class="fa-solid fa-rotate me-1"></i>Retest Connection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;"></div>
+
+    <!-- SCRIPTS -->
+    <!-- Bootstrap 5 Bundle JS (Includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js 4.4 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Application Modules -->
+    <script src="js/api.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
