@@ -1,0 +1,86 @@
+Date,City,Monitoring_Location,PM2.5,PM10,NO2,SO2,O3
+2024-01-01,Metropolis,Downtown Central,42.5,68.2,34.1,8.4,22.0
+2024-01-01,Metropolis,Industrial Zone North,78.3,135.0,52.4,18.7,15.2
+2024-01-01,Metropolis,Suburbia East,18.2,32.4,14.6,3.1,38.5
+2024-01-01,Harbor City,Harbor Portside,55.0,92.6,41.2,12.5,28.4
+2024-01-01,Green Valley,Valley Park Eco-Reserve,11.4,21.0,8.2,1.8,44.1
+2024-01-02,Metropolis,Downtown Central,45.1,72.4,36.5,9.1,20.5
+2024-01-02,Metropolis,Industrial Zone North,84.6,142.8,56.0,21.3,14.0
+2024-01-02,Metropolis,Suburbia East,19.5,34.0,15.2,3.4,36.8
+2024-01-02,Harbor City,Harbor Portside,58.3,96.0,43.8,13.2,27.1
+2024-01-02,Green Valley,Valley Park Eco-Reserve,12.0,22.5,8.9,1.9,42.6
+2024-01-03,Metropolis,Downtown Central,51.8,81.2,39.0,10.5,19.2
+2024-01-03,Metropolis,Industrial Zone North,92.1,155.4,61.2,24.0,12.8
+2024-01-03,Metropolis,Suburbia East,22.4,38.7,16.8,3.9,34.2
+2024-01-03,Harbor City,Harbor Portside,63.7,104.2,46.5,14.8,25.0
+2024-01-03,Green Valley,Valley Park Eco-Reserve,13.5,24.1,9.4,2.1,41.0
+2024-01-04,Metropolis,Downtown Central,38.2,61.0,30.4,7.8,25.4
+2024-01-04,Metropolis,Industrial Zone North,71.0,122.5,48.0,16.2,18.0
+2024-01-04,Metropolis,Suburbia East,16.0,29.1,13.2,2.8,40.1
+2024-01-04,Harbor City,Harbor Portside,49.2,83.0,37.1,11.0,31.5
+2024-01-04,Green Valley,Valley Park Eco-Reserve,9.8,18.4,7.5,1.5,46.8
+2024-01-05,Metropolis,Downtown Central,35.0,56.8,28.0,6.9,28.0
+2024-01-05,Metropolis,Industrial Zone North,65.4,115.0,44.2,15.0,19.5
+2024-01-05,Metropolis,Suburbia East,14.8,27.0,12.0,2.5,42.0
+2024-01-05,Harbor City,Harbor Portside,44.0,76.5,34.0,9.8,33.0
+2024-01-05,Green Valley,Valley Park Eco-Reserve,8.5,16.2,6.8,1.2,48.5
+2024-02-10,Metropolis,Downtown Central,58.4,94.1,45.2,12.8,18.4
+2024-02-10,Metropolis,Industrial Zone North,108.2,186.4,68.9,29.4,11.2
+2024-02-10,Metropolis,Suburbia East,25.6,44.2,18.4,4.2,32.0
+2024-02-10,Harbor City,Harbor Portside,72.1,120.5,51.0,17.5,22.6
+2024-02-10,Green Valley,Valley Park Eco-Reserve,14.2,26.0,10.1,2.3,39.4
+2024-02-11,Metropolis,Downtown Central,62.0,99.8,48.0,14.0,16.5
+2024-02-11,Metropolis,Industrial Zone North,115.0,198.0,72.4,32.1,9.8
+2024-02-11,Metropolis,Suburbia East,28.1,48.0,19.8,4.8,30.1
+2024-02-11,Harbor City,Harbor Portside,78.4,129.0,54.6,19.2,20.4
+2024-02-11,Green Valley,Valley Park Eco-Reserve,15.8,28.4,11.0,2.6,37.8
+2024-03-15,Metropolis,Downtown Central,32.6,54.1,26.8,5.9,35.2
+2024-03-15,Metropolis,Industrial Zone North,60.2,108.4,41.5,13.8,26.4
+2024-03-15,Metropolis,Suburbia East,15.1,28.0,11.4,2.2,46.0
+2024-03-15,Harbor City,Harbor Portside,41.5,72.0,32.0,8.6,38.0
+2024-03-15,Green Valley,Valley Park Eco-Reserve,9.1,17.5,6.2,1.3,52.1
+2024-04-20,Metropolis,Downtown Central,28.4,49.2,24.0,5.1,42.8
+2024-04-20,Metropolis,Industrial Zone North,54.8,98.6,38.2,11.9,32.0
+2024-04-20,Metropolis,Suburbia East,13.6,25.4,10.2,2.0,51.2
+2024-04-20,Harbor City,Harbor Portside,37.0,66.8,29.5,7.9,45.4
+2024-04-20,Green Valley,Valley Park Eco-Reserve,8.0,15.0,5.8,1.1,58.0
+2024-05-25,Metropolis,Downtown Central,36.2,59.8,29.1,6.5,48.6
+2024-05-25,Metropolis,Industrial Zone North,68.4,119.2,46.0,15.4,36.2
+2024-05-25,Metropolis,Suburbia East,16.8,30.5,12.8,2.7,56.4
+2024-05-25,Harbor City,Harbor Portside,46.2,80.4,35.8,9.5,49.0
+2024-05-25,Green Valley,Valley Park Eco-Reserve,10.2,19.1,7.0,1.4,63.5
+2024-06-18,Metropolis,Downtown Central,48.5,79.0,38.6,9.2,58.4
+2024-06-18,Metropolis,Industrial Zone North,88.0,150.2,58.4,20.5,44.0
+2024-06-18,Metropolis,Suburbia East,21.0,37.8,15.9,3.6,67.2
+2024-06-18,Harbor City,Harbor Portside,59.4,101.5,44.0,13.0,55.8
+2024-06-18,Green Valley,Valley Park Eco-Reserve,12.6,23.4,8.5,1.7,74.2
+2024-07-22,Metropolis,Downtown Central,52.1,84.5,41.0,10.1,62.0
+2024-07-22,Metropolis,Industrial Zone North,95.4,162.8,63.0,22.8,48.5
+2024-07-22,Metropolis,Suburbia East,23.5,41.0,17.2,3.9,71.0
+2024-07-22,Harbor City,Harbor Portside,65.0,110.0,47.8,14.5,60.2
+2024-07-22,Green Valley,Valley Park Eco-Reserve,14.0,25.8,9.1,1.9,79.5
+2024-08-14,Metropolis,Downtown Central,44.0,73.0,35.2,8.0,54.1
+2024-08-14,Metropolis,Industrial Zone North,81.5,140.0,53.8,18.4,41.0
+2024-08-14,Metropolis,Suburbia East,19.2,35.0,14.8,3.2,62.5
+2024-08-14,Harbor City,Harbor Portside,53.8,92.4,39.6,11.8,51.0
+2024-08-14,Green Valley,Valley Park Eco-Reserve,11.5,21.2,7.9,1.5,68.4
+2024-09-19,Metropolis,Downtown Central,39.8,65.4,31.5,7.2,41.0
+2024-09-19,Metropolis,Industrial Zone North,74.2,128.0,49.0,16.5,30.5
+2024-09-19,Metropolis,Suburbia East,17.4,31.2,13.5,2.9,49.0
+2024-09-19,Harbor City,Harbor Portside,48.5,84.0,36.2,10.2,42.5
+2024-09-19,Green Valley,Valley Park Eco-Reserve,10.0,18.8,7.1,1.3,55.0
+2024-10-25,Metropolis,Downtown Central,47.5,78.2,38.0,9.5,29.4
+2024-10-25,Metropolis,Industrial Zone North,86.4,148.5,57.5,20.0,21.0
+2024-10-25,Metropolis,Suburbia East,20.8,37.0,15.5,3.5,41.2
+2024-10-25,Harbor City,Harbor Portside,57.2,98.0,42.5,12.8,34.0
+2024-10-25,Green Valley,Valley Park Eco-Reserve,12.2,23.0,8.4,1.8,47.0
+2024-11-15,Metropolis,Downtown Central,66.8,106.5,51.2,15.4,15.8
+2024-11-15,Metropolis,Industrial Zone North,124.5,214.0,76.8,34.2,9.2
+2024-11-15,Metropolis,Suburbia East,30.4,52.8,21.5,5.2,27.5
+2024-11-15,Harbor City,Harbor Portside,84.0,138.2,58.0,21.0,18.4
+2024-11-15,Green Valley,Valley Park Eco-Reserve,17.5,31.0,12.4,2.9,33.0
+2024-12-20,Metropolis,Downtown Central,72.4,115.0,55.0,17.0,13.5
+2024-12-20,Metropolis,Industrial Zone North,132.0,226.5,81.4,37.8,7.8
+2024-12-20,Metropolis,Suburbia East,33.0,57.4,23.6,5.8,24.0
+2024-12-20,Harbor City,Harbor Portside,91.2,149.0,62.5,23.5,15.2
+2024-12-20,Green Valley,Valley Park Eco-Reserve,19.2,34.0,13.8,3.2,30.1

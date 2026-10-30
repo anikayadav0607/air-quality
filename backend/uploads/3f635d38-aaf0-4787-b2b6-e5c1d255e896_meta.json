@@ -1,0 +1,51 @@
+{
+  "datasetId": "3f635d38-aaf0-4787-b2b6-e5c1d255e896",
+  "filename": "sample_air_quality_data.csv",
+  "totalRecords": 85,
+  "locationsCount": 5,
+  "locations": [
+    "Downtown Central",
+    "Industrial Zone North",
+    "Suburbia East",
+    "Harbor Portside",
+    "Valley Park Eco-Reserve"
+  ],
+  "cities": [
+    "Metropolis",
+    "Harbor City",
+    "Green Valley"
+  ],
+  "pollutantsAvailable": [
+    "PM2.5",
+    "PM10",
+    "NO2",
+    "SO2",
+    "O3"
+  ],
+  "dateRange": {
+    "start": "2024-01-01",
+    "end": "2024-12-20"
+  },
+  "completenessRate": "100.0%",
+  "columns": [
+    "date",
+    "city",
+    "location",
+    "pm25",
+    "pm10",
+    "no2",
+    "so2",
+    "o3"
+  ],
+  "originalColumnMap": {
+    "date": "Date",
+    "city": "City",
+    "location": "Monitoring_Location",
+    "pm25": "PM2.5",
+    "pm10": "PM10",
+    "no2": "NO2",
+    "so2": "SO2",
+    "o3": "O3"
+  },
+  "fileSize": 5638
+}
