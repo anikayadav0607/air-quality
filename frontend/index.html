@@ -379,7 +379,7 @@
                                                 <i class="fa-solid fa-trash me-1"></i>Remove
                                             </button>
                                             <button id="btnUploadConfirm" type="button" class="btn btn-brand-primary btn-sm">
-                                                <i class="fa-solid fa-upload me-1"></i>Simulate Upload
+                                                <i class="fa-solid fa-upload me-1"></i>Upload & Analyze
                                             </button>
                                         </div>
                                     </div>
@@ -402,11 +402,11 @@
                                 <!-- Architectural Notice -->
                                 <div class="mt-4 p-3 bg-light-subtle rounded-3 border">
                                     <div class="d-flex align-items-center gap-2 mb-1">
-                                        <i class="fa-solid fa-circle-info text-primary"></i>
-                                        <strong class="small">Part 1 Frontend Simulation Architecture:</strong>
+                                        <i class="fa-solid fa-server text-success"></i>
+                                        <strong class="small">Backend Integration Active:</strong>
                                     </div>
                                     <p class="text-muted small mb-0">
-                                        File uploads are validated and simulated in the browser environment. In Part 2, this action will stream the multipart/form-data directly to the Flask endpoint <code>POST http://127.0.0.1:5000/api/upload</code> for server-side Pandas processing.
+                                        Uploaded files are sent directly to the Flask REST endpoint <code>POST http://127.0.0.1:5000/api/upload</code> for server-side Pandas validation, header normalization, and descriptive statistical processing.
                                     </p>
                                 </div>
                             </div>
