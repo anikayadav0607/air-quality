@@ -7,9 +7,12 @@
     "start": "npx http-server . -p 3000 -c-1 --cors -o",
     "serve": "npx http-server . -p 3000 -c-1 --cors"
   },
-  "keywords": ["air-quality", "analytics", "environment"],
+  "keywords": [
+    "air-quality",
+    "analytics",
+    "environment"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {}
 }
-
