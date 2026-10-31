@@ -1,0 +1,46 @@
+{
+  "datasetId": "87008ea5-55d8-4926-9b17-2d1e1df477b4",
+  "filename": "test_valid_air.csv",
+  "totalRecords": 3,
+  "locationsCount": 2,
+  "locations": [
+    "Test Station Alpha",
+    "Test Station Beta"
+  ],
+  "cities": [
+    "Metro"
+  ],
+  "pollutantsAvailable": [
+    "PM2.5",
+    "PM10",
+    "NO2",
+    "SO2",
+    "O3"
+  ],
+  "dateRange": {
+    "start": "2024-05-01",
+    "end": "2024-05-03"
+  },
+  "completenessRate": "100.0%",
+  "columns": [
+    "date",
+    "location",
+    "city",
+    "pm25",
+    "pm10",
+    "no2",
+    "so2",
+    "o3"
+  ],
+  "originalColumnMap": {
+    "date": "date",
+    "location": "location",
+    "city": "city",
+    "pm25": "pm25",
+    "pm10": "pm10",
+    "no2": "no2",
+    "so2": "so2",
+    "o3": "o3"
+  },
+  "fileSize": 220
+}

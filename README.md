@@ -27,6 +27,7 @@ The **Air Quality and Pollution Pattern Analysis (DA-013)** platform enables env
 - **Flask-CORS (6.0+):** Cross-Origin Resource Sharing for decoupled client communication
 - **Pandas (3.1+):** High-performance tabular data ingestion, quality auditing, time-series parsing, and cleaning
 - **NumPy (2.5+):** Numerical operations, array transformations, and Pearson correlation coefficient calculation
+- **Scikit-learn (1.4+):** Machine learning pipeline for multivariate outlier detection (`IsolationForest`), station risk clustering (`KMeans`), and temporal trend forecasting (`LinearRegression`)
 - **python-dateutil:** Robust ISO-8601 and heterogeneous date format parsing
 - **unittest:** Built-in Python automated testing framework
 
@@ -65,15 +66,16 @@ air-quality/
     ├── services/                              # Core business logic and analytics services
     │   ├── __init__.py
     │   ├── data_loader.py                     # CSV ingestion, header normalization, and preview pagination
-    │   ├── data_cleaner.py                    # Quality audit engine and cleaning pipeline
+    │   ├── data_cleaner.py                    # Quality audit engine and cleaning pipeline (IsolationForest outlier filter)
     │   ├── analytics.py                       # Descriptive statistics and station aggregations
+    │   ├── ml_service.py                      # Scikit-learn ML (IsolationForest, KMeans, LinearRegression, persistence)
     │   ├── chart_service.py                   # Chart.js JSON data transformation engine
     │   └── report_service.py                  # Executive report generation (JSON, TXT, CSV)
     ├── uploads/                               # Secure temporary storage for uploaded datasets
-    ├── outputs/                               # Generated cleaned CSVs and text reports
+    ├── outputs/                               # Generated cleaned CSVs, persistent analysis JSONs, and text reports
     └── tests/                                 # Automated test suite
         ├── __init__.py
-        └── test_backend.py                    # Comprehensive test cases covering all 12 core workflows
+        └── test_backend.py                    # Comprehensive test cases covering all 17 core workflows
 ```
 
 ---
@@ -147,6 +149,11 @@ python -m unittest discover -s backend/tests -p "test_*.py"
 10. `test_10_charts_generation`: Tests generation of all 4 Chart.js charts (Line, Bar, Histogram, Scatter).
 11. `test_11_cleaned_csv_download`: Tests streaming of cleaned CSV attachments.
 12. `test_12_executive_report_generation`: Tests generation of structured JSON and downloadable text reports.
+13. `test_13_sklearn_outlier_detection`: Tests Scikit-learn IsolationForest multivariate outlier detection.
+14. `test_14_sklearn_station_clustering`: Tests Scikit-learn KMeans station environmental risk clustering.
+15. `test_15_sklearn_trend_forecasting`: Tests Scikit-learn LinearRegression temporal trend and projection.
+16. `test_16_persistent_analysis_storage`: Tests persistent disk storage and retrieval of full analysis snapshots.
+17. `test_17_cleaning_with_outlier_filtering`: Tests pipeline deduplication, negative clamping, median imputation, and Scikit-learn outlier filtering.
 
 ---
 
@@ -170,8 +177,13 @@ All responses follow a consistent JSON response envelope:
 | `GET` | `/api/dataset/info` | Optional: `dataset_id` in path | Returns dataset metadata, station list, and completeness rate. |
 | `GET` | `/api/dataset/preview` | `page`, `limit`, `search`, `city`, `location`, `sortColumn`, `sortDir` | Returns paginated rows with computed AQI categories. |
 | `GET` | `/api/data-quality` | Optional: `dataset_id` in path | Audits missing values, duplicates, recorded zeros, and health score. |
-| `POST` | `/api/data-quality/clean` | JSON: `{ "impute_method": "median", "drop_duplicates": true }` | Cleans dataset and saves cleaned CSV. |
+| `POST` | `/api/data-quality/clean` | JSON: `{ "impute_method": "median", "filter_outliers": true }` | Cleans dataset and saves cleaned CSV. |
 | `POST` | `/api/analysis/pollution`| JSON or Query: `{ "pollutant": "pm25", "city": "All", "location": "All", "startDate": "...", "endDate": "..." }` | Calculates descriptive statistics and station averages. |
+| `GET/POST` | `/api/ml/outliers` | `contamination=0.05` | Scikit-learn IsolationForest multivariate anomaly detection. |
+| `GET/POST` | `/api/ml/clusters` | `clusters=3` | Scikit-learn KMeans unsupervised station risk clustering. |
+| `GET/POST` | `/api/ml/trend` | `pollutant=pm25`, `days=5` | Scikit-learn LinearRegression trend modeling and projections. |
+| `POST` | `/api/analysis/persist` | JSON: `{ "notes": "..." }` | Persists comprehensive analysis snapshot to disk storage. |
+| `GET` | `/api/analysis/persistent` | Optional: `dataset_id` in path | Retrieves persisted analysis records from disk/memory. |
 | `GET` | `/api/charts/data` | `type=line\|bar\|histogram\|scatter`, `pollutant=pm25` | Returns Chart.js structured datasets. |
 | `GET` | `/api/export/csv` | None | Streams downloadable cleaned CSV file. |
 | `GET` | `/api/export/report` | `format=json\|txt` | Returns executive report as JSON or downloadable text file. |
