@@ -1,0 +1,58 @@
+{
+  "datasetId": "55e3227b-cda5-4d32-b3bb-079356376808",
+  "filename": "test_valid_air.csv",
+  "totalRecords": 3,
+  "timestamp": "2026-10-31T10:34:11.776075",
+  "notes": "Automated test run",
+  "scikitLearnML": {
+    "outlierDetection": {
+      "method": "Scikit-learn IsolationForest",
+      "outlierCount": 1,
+      "outlierPercentage": 33.33
+    },
+    "stationClustering": {
+      "success": true,
+      "algorithm": "Scikit-learn KMeans",
+      "nClusters": 2,
+      "features": [
+        "pm25",
+        "pm10",
+        "no2",
+        "so2",
+        "o3"
+      ],
+      "stations": [
+        {
+          "location": "Test Station Alpha",
+          "clusterId": 0,
+          "riskProfile": "Low Exposure / Baseline",
+          "meanMetrics": {
+            "pm25": 32.3,
+            "pm10": 51.6,
+            "no2": 20.3,
+            "so2": 7.25,
+            "o3": 47.6
+          }
+        },
+        {
+          "location": "Test Station Beta",
+          "clusterId": 1,
+          "riskProfile": "Moderate Urban Blend",
+          "meanMetrics": {
+            "pm25": 42.0,
+            "pm10": 68.4,
+            "no2": 28.0,
+            "so2": 10.2,
+            "o3": 40.5
+          }
+        }
+      ]
+    },
+    "trendModel": {
+      "pollutant": "pm25",
+      "slopePerDay": -2.9,
+      "r2Score": 0.211,
+      "trendDirection": "Decreasing / Improving"
+    }
+  }
+}

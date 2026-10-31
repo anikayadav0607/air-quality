@@ -1,0 +1,15 @@
+{
+  "name": "air-quality-da013-frontend",
+  "version": "1.0.0",
+  "description": "Air Quality and Pollution Pattern Analysis (DA-013) — Frontend UI",
+  "scripts": {
+    "dev": "npx http-server . -p 3000 -c-1 --cors -o",
+    "start": "npx http-server . -p 3000 -c-1 --cors -o",
+    "serve": "npx http-server . -p 3000 -c-1 --cors"
+  },
+  "keywords": ["air-quality", "analytics", "environment"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {}
+}
+

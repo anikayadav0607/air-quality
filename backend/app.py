@@ -24,11 +24,16 @@ REST API Endpoints:
 - GET  /api/export/report
 - GET  /api/dataset/<dataset_id>/report
 - GET  /api/dataset/<dataset_id>/report/download
+- GET/POST /api/ml/outliers
+- GET/POST /api/ml/clusters
+- GET/POST /api/ml/trend
+- POST /api/analysis/persist
+- GET  /api/analysis/persistent
 """
 
 import os
 import logging
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
@@ -38,6 +43,7 @@ from services.data_cleaner import data_cleaner_service
 from services.analytics import analytics_service
 from services.chart_service import chart_service
 from services.report_service import report_service
+from services.ml_service import ml_service
 
 # Configure structured logging
 logging.basicConfig(
@@ -47,12 +53,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def create_app():
-    """Application factory for the Flask REST API."""
-    app = Flask(__name__)
+    """Application factory for the Flask REST API + static frontend server."""
+    # Disable Flask's built-in /static route; we serve the frontend ourselves.
+    app = Flask(__name__, static_folder=None)
     app.config.from_object(Config)
 
-    # Enable CORS for all local frontend origins
+    # Enable CORS for all API origins (allows external tools / dev servers)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+    # =========================================================================
+    # FRONTEND STATIC FILE SERVING
+    # =========================================================================
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_frontend(path):
+        """Serve the frontend SPA from the /frontend directory."""
+        target = os.path.join(Config.FRONTEND_FOLDER, path) if path else None
+        if path and target and os.path.exists(target) and os.path.isfile(target):
+            return send_from_directory(Config.FRONTEND_FOLDER, path)
+        return send_from_directory(Config.FRONTEND_FOLDER, 'index.html')
 
     def api_response(data=None, message="Operation completed successfully", status_code=200):
         """
@@ -274,6 +293,67 @@ def create_app():
             download_name=f"executive_report_{dataset_id}.txt",
             mimetype='text/plain'
         )
+
+    # =========================================================================
+    # SCIKIT-LEARN MACHINE LEARNING & ADVANCED STATISTICAL API
+    # =========================================================================
+    @app.route('/api/ml/outliers', methods=['GET', 'POST'])
+    @app.route('/api/dataset/<dataset_id>/outliers', methods=['GET', 'POST'])
+    def detect_dataset_outliers(dataset_id=None):
+        """Detect multivariate outliers using Scikit-learn IsolationForest."""
+        req_id = dataset_id or request.args.get('dataset_id')
+        contamination = float(request.args.get('contamination', 0.05))
+        if request.is_json and request.get_json(silent=True):
+            contamination = float(request.get_json().get('contamination', contamination))
+
+        result = ml_service.detect_outliers(req_id, contamination=contamination)
+        return api_response(data=result, message="Scikit-learn Isolation Forest outlier detection complete.")
+
+    @app.route('/api/ml/clusters', methods=['GET', 'POST'])
+    @app.route('/api/dataset/<dataset_id>/clusters', methods=['GET', 'POST'])
+    def cluster_monitoring_stations(dataset_id=None):
+        """Group monitoring locations into risk clusters using Scikit-learn KMeans."""
+        req_id = dataset_id or request.args.get('dataset_id')
+        n_clusters = int(request.args.get('clusters', 3))
+        if request.is_json and request.get_json(silent=True):
+            n_clusters = int(request.get_json().get('clusters', n_clusters))
+
+        result = ml_service.cluster_stations(req_id, n_clusters=n_clusters)
+        return api_response(data=result, message="Scikit-learn KMeans station clustering complete.")
+
+    @app.route('/api/ml/trend', methods=['GET', 'POST'])
+    @app.route('/api/dataset/<dataset_id>/trend', methods=['GET', 'POST'])
+    def forecast_pollution_trend(dataset_id=None):
+        """Fit Linear Regression trajectory and compute projections using Scikit-learn."""
+        req_id = dataset_id or request.args.get('dataset_id')
+        pollutant = request.args.get('pollutant', 'pm25')
+        forecast_days = int(request.args.get('days', 5))
+        if request.is_json and request.get_json(silent=True):
+            pollutant = request.get_json().get('pollutant', pollutant)
+            forecast_days = int(request.get_json().get('days', forecast_days))
+
+        result = ml_service.forecast_linear_trend(req_id, pollutant=pollutant, forecast_steps=forecast_days)
+        return api_response(data=result, message="Scikit-learn linear trend projection computed.")
+
+    @app.route('/api/analysis/persist', methods=['POST'])
+    @app.route('/api/dataset/<dataset_id>/persist', methods=['POST'])
+    def persist_analysis(dataset_id=None):
+        """Persist comprehensive ML and descriptive statistical analysis to disk."""
+        req_id = dataset_id or request.args.get('dataset_id')
+        notes = "Automated Scikit-learn ML & Statistical Quality Audit"
+        if request.is_json and request.get_json(silent=True):
+            notes = request.get_json().get('notes', notes)
+
+        result = ml_service.save_persistent_analysis(req_id, notes=notes)
+        return api_response(data=result, message="Analysis successfully persisted to disk storage.")
+
+    @app.route('/api/analysis/persistent', methods=['GET'])
+    @app.route('/api/dataset/<dataset_id>/persistent', methods=['GET'])
+    def get_persisted_analysis(dataset_id=None):
+        """Retrieve stored persistent analysis records."""
+        req_id = dataset_id or request.args.get('dataset_id')
+        result = ml_service.get_persistent_analysis(req_id)
+        return api_response(data=result.get('data', result), message="Persistent analysis retrieved.")
 
     # =========================================================================
     # CENTRALIZED ERROR HANDLERS

@@ -359,10 +359,12 @@ const ApiService = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        drop_duplicates: true,
-                        drop_invalid_dates: true,
-                        clamp_negative: true,
-                        impute_method: options.impute_method || 'median'
+                        drop_duplicates: options.drop_duplicates !== undefined ? options.drop_duplicates : true,
+                        drop_invalid_dates: options.drop_invalid_dates !== undefined ? options.drop_invalid_dates : true,
+                        clamp_negative: options.clamp_negative !== undefined ? options.clamp_negative : true,
+                        impute_method: options.impute_method || 'median',
+                        filter_outliers: options.filter_outliers || false,
+                        contamination: options.contamination || 0.05
                     })
                 });
 
@@ -388,12 +390,14 @@ const ApiService = {
                 invalidDatesRemoved: 0,
                 clampedValues: 7,
                 imputedValues: 84,
+                outliersFiltered: options.filter_outliers ? 15 : 0,
                 healthScore: 99.8
             },
             actions: [
                 "Removed 12 duplicate records.",
                 "Clamped 7 negative sensor readings to 0.0.",
-                "Imputed 84 missing values using temporal median strategy."
+                "Imputed 84 missing values using temporal median strategy.",
+                ...(options.filter_outliers ? ["Filtered 15 multivariate outlier records using Scikit-learn Isolation Forest."] : [])
             ]
         };
     },
@@ -672,6 +676,133 @@ const ApiService = {
         // Native browser print preview for clean PDF export
         window.print();
         return { success: true, message: "Browser print/export preview opened." };
+    },
+
+    /**
+     * Detect multivariate outliers using Scikit-learn IsolationForest
+     */
+    async getMLOutliers(contamination = 0.05) {
+        if (API_CONFIG.IS_BACKEND_AVAILABLE) {
+            try {
+                const url = API_CONFIG.ACTIVE_DATASET_ID
+                    ? `${API_CONFIG.BASE_URL}/dataset/${API_CONFIG.ACTIVE_DATASET_ID}/outliers?contamination=${contamination}`
+                    : `${API_CONFIG.BASE_URL}/ml/outliers?contamination=${contamination}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const json = await res.json();
+                    return { isDemo: false, ...(json.data || json) };
+                }
+            } catch (e) {
+                console.warn("Backend getMLOutliers failed, falling back to mock.", e);
+            }
+        }
+        return {
+            isDemo: true,
+            method: 'Scikit-learn IsolationForest',
+            outlierCount: 14,
+            outlierPercentage: 2.8,
+            contaminationRate: contamination,
+            outliers: DEMO_METRIC_RECORDS.slice(0, 5).map((r, i) => ({
+                ...r,
+                anomalyScore: -(0.12 + i * 0.04)
+            }))
+        };
+    },
+
+    /**
+     * Group stations using Scikit-learn KMeans Clustering
+     */
+    async getMLClusters(clusters = 3) {
+        if (API_CONFIG.IS_BACKEND_AVAILABLE) {
+            try {
+                const url = API_CONFIG.ACTIVE_DATASET_ID
+                    ? `${API_CONFIG.BASE_URL}/dataset/${API_CONFIG.ACTIVE_DATASET_ID}/clusters?clusters=${clusters}`
+                    : `${API_CONFIG.BASE_URL}/ml/clusters?clusters=${clusters}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const json = await res.json();
+                    return { isDemo: false, ...(json.data || json) };
+                }
+            } catch (e) {
+                console.warn("Backend getMLClusters failed, falling back to mock.", e);
+            }
+        }
+        return {
+            isDemo: true,
+            algorithm: 'Scikit-learn KMeans',
+            nClusters: clusters,
+            stations: [
+                { location: "Industrial Zone North", clusterId: 2, riskProfile: "High Pollution Hotspot" },
+                { location: "Downtown Central", clusterId: 1, riskProfile: "Moderate Urban Blend" },
+                { location: "Harbor Portside", clusterId: 1, riskProfile: "Moderate Urban Blend" },
+                { location: "Suburbia East", clusterId: 0, riskProfile: "Low Exposure / Baseline" },
+                { location: "Valley Park Eco-Reserve", clusterId: 0, riskProfile: "Low Exposure / Baseline" }
+            ]
+        };
+    },
+
+    /**
+     * Fit Scikit-learn Linear Regression Trend and Future Projections
+     */
+    async getMLTrend(pollutant = 'pm25', days = 5) {
+        if (API_CONFIG.IS_BACKEND_AVAILABLE) {
+            try {
+                const url = API_CONFIG.ACTIVE_DATASET_ID
+                    ? `${API_CONFIG.BASE_URL}/dataset/${API_CONFIG.ACTIVE_DATASET_ID}/trend?pollutant=${pollutant}&days=${days}`
+                    : `${API_CONFIG.BASE_URL}/ml/trend?pollutant=${pollutant}&days=${days}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const json = await res.json();
+                    return { isDemo: false, ...(json.data || json) };
+                }
+            } catch (e) {
+                console.warn("Backend getMLTrend failed, falling back to mock.", e);
+            }
+        }
+        return {
+            isDemo: true,
+            algorithm: 'Scikit-learn LinearRegression',
+            pollutant,
+            slopePerDay: 0.14,
+            r2Score: 0.82,
+            trendDirection: 'Rising / Deteriorating',
+            forecast: [
+                { dayOffset: 1, projectedValue: 48.2 },
+                { dayOffset: 2, projectedValue: 49.5 },
+                { dayOffset: 3, projectedValue: 50.8 },
+                { dayOffset: 4, projectedValue: 52.1 },
+                { dayOffset: 5, projectedValue: 53.4 }
+            ]
+        };
+    },
+
+    /**
+     * Persist Analysis Results to Disk
+     */
+    async persistAnalysis(notes = "Quality Audit & Scikit-learn Model Snapshot") {
+        if (API_CONFIG.IS_BACKEND_AVAILABLE) {
+            try {
+                const url = API_CONFIG.ACTIVE_DATASET_ID
+                    ? `${API_CONFIG.BASE_URL}/dataset/${API_CONFIG.ACTIVE_DATASET_ID}/persist`
+                    : `${API_CONFIG.BASE_URL}/analysis/persist`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ notes })
+                });
+                if (res.ok) {
+                    const json = await res.json();
+                    return { isDemo: false, ...(json.data || json) };
+                }
+            } catch (e) {
+                console.warn("Backend persistAnalysis failed, falling back to simulation.", e);
+            }
+        }
+        return {
+            isDemo: true,
+            success: true,
+            message: "Analysis snapshot saved to local session (backend offline)."
+        };
     }
 };
 

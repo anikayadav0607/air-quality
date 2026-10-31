@@ -16,6 +16,7 @@ import pandas as pd
 import numpy as np
 from config import Config
 from services.data_loader import data_loader_service, POLLUTANT_COLUMNS
+from services.ml_service import ml_service
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +108,14 @@ class DataCleanerService:
                     'rule': f"Valid range ({limits['rule']})"
                 })
 
+        # 4. Scikit-learn Multivariate Anomaly Check
+        ml_anomalies = 0
+        try:
+            outlier_scan = ml_service.detect_outliers(dataset_id, contamination=0.05)
+            ml_anomalies = outlier_scan.get('outlierCount', 0)
+        except Exception as e:
+            logger.debug(f"ML anomaly audit skipped: {e}")
+
         # Overall Health Score (penalize missing, duplicates, and invalid numbers)
         total_eval_points = (total_rows * max(len(POLLUTANT_COLUMNS), 1))
         anomalies = total_missing + duplicate_rows + total_invalid_numeric + invalid_dates
@@ -117,6 +126,7 @@ class DataCleanerService:
         summary_text = (
             f"Audit scanned {total_rows:,} rows. Identified {total_missing} missing pollutant values, "
             f"{duplicate_rows} exact duplicates, {total_invalid_numeric} out-of-range sensor readings, "
+            f"{ml_anomalies} Scikit-learn IsolationForest multivariate anomalies, "
             f"and {total_recorded_zeros} verified zero measurements (not treated as missing)."
         )
 
@@ -130,6 +140,7 @@ class DataCleanerService:
                 'invalidNumeric': total_invalid_numeric,
                 'recordedZeros': total_recorded_zeros,
                 'invalidDates': invalid_dates,
+                'mlOutliersDetected': ml_anomalies,
                 'healthScore': health_score
             },
             'columnBreakdown': column_breakdown,
@@ -159,6 +170,8 @@ class DataCleanerService:
         drop_invalid_dates = options.get('drop_invalid_dates', True)
         clamp_negative = options.get('clamp_negative', True)
         impute_method = options.get('impute_method', 'median').lower()
+        filter_outliers = options.get('filter_outliers', False)
+        contamination = float(options.get('contamination', 0.05))
 
         # 1. Deduplication
         duplicates_removed = 0
@@ -218,6 +231,16 @@ class DataCleanerService:
         else:
             actions_taken.append("Missing values retained as NaN (no imputation applied per request).")
 
+        # 5. Outlier Filtering via Scikit-learn IsolationForest
+        outliers_filtered_count = 0
+        if filter_outliers:
+            try:
+                df, outliers_filtered_count, _ = ml_service.filter_outliers_dataframe(df, contamination=contamination)
+                if outliers_filtered_count > 0:
+                    actions_taken.append(f"Filtered {outliers_filtered_count} multivariate outlier records using Scikit-learn Isolation Forest (contamination={contamination}).")
+            except Exception as e:
+                logger.warning(f"Could not apply IsolationForest outlier filtering: {e}")
+
         final_rows = len(df)
 
         # Save cleaned dataset to output folder
@@ -236,6 +259,7 @@ class DataCleanerService:
             'invalidDatesRemoved': invalid_dates_removed,
             'clampedCount': clamped_count,
             'imputedCount': imputed_count,
+            'outliersFiltered': outliers_filtered_count,
             'imputeMethod': impute_method,
             'actionsTaken': actions_taken
         }
@@ -251,6 +275,7 @@ class DataCleanerService:
                 'invalidDatesRemoved': invalid_dates_removed,
                 'clampedValues': clamped_count,
                 'imputedValues': imputed_count,
+                'outliersFiltered': outliers_filtered_count,
                 'healthScore': 99.8
             },
             'actions': actions_taken,

@@ -327,7 +327,7 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -411,7 +411,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -515,7 +515,7 @@
                                 </ul>
                             </nav>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -534,33 +534,64 @@
 
                         <!-- Quality Audit KPI Cards -->
                         <div class="row g-3 mb-4">
-                            <div class="col-sm-6 col-md-3">
-                                <div class="p-3 border rounded-3 bg-light">
+                            <div class="col-sm-6 col-lg">
+                                <div class="p-3 border rounded-3 bg-light h-100">
                                     <div class="small text-muted fw-semibold">MISSING VALUES</div>
                                     <div id="cleanAuditMissing" class="fs-3 fw-bold text-danger mt-1">84</div>
-                                    <div class="small text-muted">3.4% of total sensor rows</div>
+                                    <div class="small text-muted">Sensor gaps</div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="p-3 border rounded-3 bg-light">
-                                    <div class="small text-muted fw-semibold">DUPLICATE RECORDS</div>
+                            <div class="col-sm-6 col-lg">
+                                <div class="p-3 border rounded-3 bg-light h-100">
+                                    <div class="small text-muted fw-semibold">DUPLICATES</div>
                                     <div id="cleanAuditDuplicates" class="fs-3 fw-bold text-warning mt-1">12</div>
-                                    <div class="small text-muted">0.5% duplicate timestamps</div>
+                                    <div class="small text-muted">Redundant rows</div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="p-3 border rounded-3 bg-light">
+                            <div class="col-sm-6 col-lg">
+                                <div class="p-3 border rounded-3 bg-light h-100">
                                     <div class="small text-muted fw-semibold">INVALID NUMERICS</div>
                                     <div id="cleanAuditInvalidNumeric" class="fs-3 fw-bold text-danger mt-1">7</div>
-                                    <div class="small text-muted">Negative or extreme outliers</div>
+                                    <div class="small text-muted">Negative/range errors</div>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-3">
-                                <div class="p-3 border rounded-3 bg-light">
-                                    <div class="small text-muted fw-semibold">INVALID DATES</div>
-                                    <div id="cleanAuditInvalidDates" class="fs-3 fw-bold text-success mt-1">0</div>
-                                    <div class="small text-muted">100% compliant ISO-8601</div>
+                            <div class="col-sm-6 col-lg">
+                                <div class="p-3 border rounded-3 bg-light h-100">
+                                    <div class="small text-muted fw-semibold">ML OUTLIERS (SKLEARN)</div>
+                                    <div id="cleanAuditMLOutliers" class="fs-3 fw-bold text-primary mt-1">--</div>
+                                    <div class="small text-muted">IsolationForest anomalies</div>
                                 </div>
+                            </div>
+                            <div class="col-sm-6 col-lg">
+                                <div class="p-3 border rounded-3 bg-light h-100">
+                                    <div class="small text-muted fw-semibold">HEALTH SCORE</div>
+                                    <div id="cleanHealthScore" class="fs-3 fw-bold text-success mt-1">96.1%</div>
+                                    <div class="small text-muted">Schema integrity</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scikit-learn Outlier Configuration Toolbar -->
+                        <div class="p-3 mb-4 rounded-3 border bg-light-subtle d-flex flex-wrap align-items-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" id="checkFilterOutliers" checked>
+                                    <label class="form-check-label fw-semibold small" for="checkFilterOutliers">
+                                        <i class="fa-solid fa-brain text-primary me-1"></i>Enable Scikit-learn Isolation Forest Outlier Filtering
+                                    </label>
+                                </div>
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">ML Model Active</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="selectContamination" class="small text-muted fw-semibold text-nowrap">Contamination Rate:</label>
+                                <select id="selectContamination" class="form-select form-select-sm" style="width: 130px;">
+                                    <option value="0.02">2% (Strict)</option>
+                                    <option value="0.05" selected>5% (Balanced)</option>
+                                    <option value="0.10">10% (Aggressive)</option>
+                                </select>
+                                <button id="btnScanMLOutliers" type="button" class="btn btn-outline-primary btn-sm text-nowrap">
+                                    <i class="fa-solid fa-magnifying-glass-chart me-1"></i>Scan Outliers
+                                </button>
                             </div>
                         </div>
 
@@ -626,13 +657,16 @@
                                 <i class="fa-solid fa-shield-halved me-2"></i>Check Data Quality
                             </button>
                             <button id="btnCleanDataset" type="button" class="btn btn-brand-primary btn-sm">
-                                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Clean Dataset
+                                <i class="fa-solid fa-wand-magic-sparkles me-2"></i>Clean & Filter Outliers
+                            </button>
+                            <button id="btnPersistAnalysis" type="button" class="btn btn-outline-primary btn-sm">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>Persist Analysis Snapshot
                             </button>
                             <button id="btnDownloadCleanedCsv" type="button" class="btn btn-outline-success btn-sm">
                                 <i class="fa-solid fa-download me-2"></i>Download Cleaned CSV
                             </button>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -811,6 +845,39 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Scikit-learn Machine Learning & Pattern Intelligence -->
+                    <div class="row g-4 mt-2">
+                        <div class="col-lg-6">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-network-wired text-primary"></i> Station Risk Clustering (Scikit-learn KMeans)</h5>
+                                        <p class="card-subtitle-styled">Unsupervised multivariate partitioning across all pollutant dimensions</p>
+                                    </div>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">KMeans ML</span>
+                                </div>
+                                <div id="mlClusterContainer" class="d-flex flex-column gap-2">
+                                    <div class="text-center py-3 text-muted small">Loading machine learning clusters...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="analytics-card h-100">
+                                <div class="card-header-styled">
+                                    <div>
+                                        <h5 class="card-title-styled"><i class="fa-solid fa-chart-line text-primary"></i> Trajectory Trend Forecast (Scikit-learn Regression)</h5>
+                                        <p class="card-subtitle-styled">Linear regression trend slope and 5-step forward projection</p>
+                                    </div>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">LinearRegression</span>
+                                </div>
+                                <div id="mlTrendContainer" class="d-flex flex-column gap-2">
+                                    <div class="text-center py-3 text-muted small">Fitting regression trajectory...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
 
@@ -920,7 +987,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -1042,7 +1109,7 @@
                                 This application presents descriptive analysis of recorded measurements. Missing values are not treated as zero, and comparisons must account for measurement units, monitoring locations, and data quality. The results do not establish pollution causes or provide medical conclusions.
                             </p>
                         </div>
-                    </div>
+
                 </section>
 
 
@@ -1141,7 +1208,7 @@
                                 <span class="badge bg-light text-dark border"><i class="fa-solid fa-icons text-info me-1"></i> Font Awesome 6.5</span>
                             </div>
                         </div>
-                    </div>
+
                 </section>
 
             </main>

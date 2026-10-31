@@ -762,31 +762,70 @@ const EMBEDDED_SAMPLE_CSV = `Date,City,Monitoring_Location,PM2.5,PM10,NO2,SO2,O3
         const checkQualityBtn = document.getElementById('btnCheckDataQuality');
         const cleanDatasetBtn = document.getElementById('btnCleanDataset');
         const downloadCleanedBtn = document.getElementById('btnDownloadCleanedCsv');
+        const scanOutliersBtn = document.getElementById('btnScanMLOutliers');
+        const persistBtn = document.getElementById('btnPersistAnalysis');
+
+        // Scikit-learn Anomaly Scan
+        scanOutliersBtn?.addEventListener('click', async () => {
+            const contamination = parseFloat(document.getElementById('selectContamination')?.value || 0.05);
+            scanOutliersBtn.disabled = true;
+            scanOutliersBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Scanning...';
+
+            const res = await window.ApiService.getMLOutliers(contamination);
+            const badge = document.getElementById('cleanAuditMLOutliers');
+            if (badge) {
+                badge.textContent = `${res.outlierCount || 0} (${res.outlierPercentage || 0}%)`;
+            }
+
+            scanOutliersBtn.disabled = false;
+            scanOutliersBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart me-1"></i>Scan Outliers';
+            this.showToast(`Scikit-learn Isolation Forest detected ${res.outlierCount} multivariate anomalies.`, 'info');
+        });
+
+        // Persist Analysis Snapshot
+        persistBtn?.addEventListener('click', async () => {
+            persistBtn.disabled = true;
+            persistBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i>Saving...';
+
+            const res = await window.ApiService.persistAnalysis("Manual Snapshot by Analyst");
+            persistBtn.disabled = false;
+            persistBtn.innerHTML = '<i class="fa-solid fa-floppy-disk me-2"></i>Persist Analysis Snapshot';
+            this.showToast('Full Scikit-learn statistical analysis persisted to outputs disk storage.', 'success');
+        });
 
         checkQualityBtn?.addEventListener('click', async () => {
             checkQualityBtn.disabled = true;
             checkQualityBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Auditing Sensor Records...';
 
-            await new Promise(r => setTimeout(r, 800)); // Smooth UX pause
+            await new Promise(r => setTimeout(r, 600)); // Smooth UX pause
             const stats = await window.ApiService.getDataQualityStats();
+            const contamination = parseFloat(document.getElementById('selectContamination')?.value || 0.05);
+            const mlScan = await window.ApiService.getMLOutliers(contamination);
 
             document.getElementById('cleanAuditMissing').textContent = stats.metrics.missingValues;
             document.getElementById('cleanAuditDuplicates').textContent = stats.metrics.duplicateRecords;
             document.getElementById('cleanAuditInvalidNumeric').textContent = stats.metrics.invalidNumeric;
-            document.getElementById('cleanAuditInvalidDates').textContent = stats.metrics.invalidDates;
+            document.getElementById('cleanAuditMLOutliers').textContent = `${mlScan.outlierCount || 0}`;
             document.getElementById('cleanHealthScore').textContent = `${stats.metrics.healthScore}%`;
 
             checkQualityBtn.disabled = false;
             checkQualityBtn.innerHTML = '<i class="fa-solid fa-shield-halved me-2"></i>Check Data Quality';
 
-            this.showToast('Data quality audit scan complete. 103 items flagged for cleaning.', 'info');
+            this.showToast(`Audit scan complete. ${mlScan.outlierCount || 0} ML IsolationForest anomalies flagged.`, 'info');
         });
 
         cleanDatasetBtn?.addEventListener('click', async () => {
             cleanDatasetBtn.disabled = true;
             cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Executing Cleaning Pipeline...';
 
-            const cleanRes = await window.ApiService.cleanDataset({ impute_method: 'median' });
+            const filterOutliers = document.getElementById('checkFilterOutliers')?.checked ?? true;
+            const contamination = parseFloat(document.getElementById('selectContamination')?.value || 0.05);
+
+            const cleanRes = await window.ApiService.cleanDataset({
+                impute_method: 'median',
+                filter_outliers: filterOutliers,
+                contamination: contamination
+            });
 
             // Display results
             const banner = document.getElementById('cleaningResultBanner');
@@ -799,13 +838,15 @@ const EMBEDDED_SAMPLE_CSV = `Date,City,Monitoring_Location,PM2.5,PM10,NO2,SO2,O3
             document.getElementById('cleanAuditMissing').textContent = `${cleanRes.metrics.imputedValues || 0} (Imputed)`;
             document.getElementById('cleanAuditDuplicates').textContent = `${cleanRes.metrics.duplicatesRemoved || 0} (Removed)`;
             document.getElementById('cleanAuditInvalidNumeric').textContent = `${cleanRes.metrics.clampedValues || 0} (Corrected)`;
+            document.getElementById('cleanAuditMLOutliers').textContent = `${cleanRes.metrics.outliersFiltered || 0} (Filtered)`;
             document.getElementById('cleanHealthScore').textContent = `${cleanRes.metrics.healthScore || 99.8}%`;
 
             cleanDatasetBtn.disabled = false;
-            cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Dataset Cleaned';
+            cleanDatasetBtn.innerHTML = '<i class="fa-solid fa-check-double me-2"></i>Dataset Cleaned & Filtered';
 
-            this.showToast('Cleaning pipeline executed successfully.', 'success');
+            this.showToast('Cleaning & Scikit-learn outlier filtering executed successfully.', 'success');
             await this.renderPreviewTable();
+            await this.updateAnalysisMetrics();
         });
 
         downloadCleanedBtn?.addEventListener('click', async () => {
@@ -882,6 +923,79 @@ const EMBEDDED_SAMPLE_CSV = `Date,City,Monitoring_Location,PM2.5,PM10,NO2,SO2,O3
                     </td>
                 </tr>
             `).join('');
+        }
+
+        // Render Scikit-learn Machine Learning Intelligence
+        await this.renderMLInsights(this.state.analysisFilters.pollutant || 'pm25');
+    },
+
+    async renderMLInsights(pollutant = 'pm25') {
+        const clusterContainer = document.getElementById('mlClusterContainer');
+        const trendContainer = document.getElementById('mlTrendContainer');
+
+        // 1. Scikit-learn KMeans Clusters
+        if (clusterContainer) {
+            try {
+                const clusterRes = await window.ApiService.getMLClusters(3);
+                if (clusterRes.stations && clusterRes.stations.length > 0) {
+                    clusterContainer.innerHTML = clusterRes.stations.map(st => {
+                        let badgeColor = 'bg-success-subtle text-success border-success-subtle';
+                        if (st.riskProfile.includes('High') || st.riskProfile.includes('Hotspot')) {
+                            badgeColor = 'bg-danger-subtle text-danger border-danger-subtle';
+                        } else if (st.riskProfile.includes('Moderate')) {
+                            badgeColor = 'bg-warning-subtle text-dark border-warning-subtle';
+                        }
+                        return `
+                            <div class="p-2 border rounded-2 d-flex justify-content-between align-items-center bg-light-subtle">
+                                <div>
+                                    <span class="fw-semibold small">${st.location}</span>
+                                    <div class="text-muted" style="font-size: 0.72rem;">Cluster #${st.clusterId}</div>
+                                </div>
+                                <span class="badge ${badgeColor} border py-1 px-2">${st.riskProfile}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (err) {
+                console.warn("Could not render KMeans clusters", err);
+            }
+        }
+
+        // 2. Scikit-learn Linear Regression Trend Forecast
+        if (trendContainer) {
+            try {
+                const trendRes = await window.ApiService.getMLTrend(pollutant, 5);
+                if (trendRes.forecast) {
+                    const slopeColor = trendRes.slopePerDay > 0 ? 'text-danger' : 'text-success';
+                    const slopeIcon = trendRes.slopePerDay > 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
+                    trendContainer.innerHTML = `
+                        <div class="p-2 border rounded-2 bg-light-subtle mb-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small fw-semibold">Slope Velocity:</span>
+                                <span class="fw-bold ${slopeColor} small">
+                                    <i class="fa-solid ${slopeIcon} me-1"></i>${trendRes.slopePerDay > 0 ? '+' : ''}${trendRes.slopePerDay} unit/day
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <span class="small text-muted">Goodness of Fit (R²):</span>
+                                <span class="badge bg-secondary-subtle text-secondary">${trendRes.r2Score}</span>
+                            </div>
+                            <div class="small text-muted mt-1">Trajectory: <strong>${trendRes.trendDirection}</strong></div>
+                        </div>
+                        <div class="small fw-bold text-muted mb-1">5-Step Forward Projection:</div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            ${trendRes.forecast.map(f => `
+                                <div class="p-2 border rounded text-center bg-white flex-fill" style="min-width: 60px;">
+                                    <div class="text-muted" style="font-size: 0.7rem;">+${f.dayOffset}d</div>
+                                    <div class="fw-bold text-primary small">${f.projectedValue}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.warn("Could not render trend forecast", err);
+            }
         }
     },
 

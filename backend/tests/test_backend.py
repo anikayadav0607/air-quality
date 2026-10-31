@@ -175,5 +175,70 @@ class BackendAnalyticsTestCase(unittest.TestCase):
         self.assertEqual(res_txt.status_code, 200)
         self.assertEqual(res_txt.mimetype, 'text/plain')
 
+    def test_13_sklearn_outlier_detection(self):
+        """Test Scikit-learn IsolationForest multivariate outlier detection."""
+        res = self.client.get('/api/ml/outliers?contamination=0.05')
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertIn('outlierCount', data['data'])
+        self.assertIn('outliers', data['data'])
+        self.assertEqual(data['data']['method'], 'Scikit-learn IsolationForest')
+
+    def test_14_sklearn_station_clustering(self):
+        """Test Scikit-learn KMeans station risk clustering."""
+        res = self.client.get('/api/ml/clusters?clusters=3')
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['data']['algorithm'], 'Scikit-learn KMeans')
+        self.assertIn('stations', data['data'])
+        if data['data']['stations']:
+            self.assertIn('riskProfile', data['data']['stations'][0])
+
+    def test_15_sklearn_trend_forecasting(self):
+        """Test Scikit-learn LinearRegression temporal trend modeling."""
+        res = self.client.get('/api/ml/trend?pollutant=pm25&days=5')
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertEqual(data['data']['algorithm'], 'Scikit-learn LinearRegression')
+        self.assertIn('slopePerDay', data['data'])
+        self.assertIn('forecast', data['data'])
+        self.assertEqual(len(data['data']['forecast']), 5)
+
+    def test_16_persistent_analysis_storage(self):
+        """Test persistent disk storage and retrieval of full analysis."""
+        # Persist analysis
+        res_post = self.client.post('/api/analysis/persist', json={'notes': 'Automated test run'})
+        self.assertEqual(res_post.status_code, 200)
+        data_post = res_post.get_json()
+        self.assertTrue(data_post['success'])
+        self.assertIn('persistentFilePath', data_post['data'])
+        self.assertTrue(os.path.exists(data_post['data']['persistentFilePath']))
+
+        # Retrieve persistent analysis
+        res_get = self.client.get('/api/analysis/persistent')
+        self.assertEqual(res_get.status_code, 200)
+        data_get = res_get.get_json()
+        self.assertTrue(data_get['success'])
+        self.assertIn('scikitLearnML', data_get['data'])
+
+    def test_17_cleaning_with_outlier_filtering(self):
+        """Test dataset cleaning pipeline with Scikit-learn outlier filtering enabled."""
+        payload = {
+            'drop_duplicates': True,
+            'drop_invalid_dates': True,
+            'clamp_negative': True,
+            'impute_method': 'median',
+            'filter_outliers': True,
+            'contamination': 0.05
+        }
+        res = self.client.post('/api/data-quality/clean', json=payload)
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertTrue(data['success'])
+        self.assertIn('outliersFiltered', data['data']['metrics'])
+
 if __name__ == '__main__':
     unittest.main()

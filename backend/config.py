@@ -17,6 +17,7 @@ class Config:
     # Storage locations
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
     OUTPUT_FOLDER = os.path.join(BASE_DIR, 'outputs')
+    FRONTEND_FOLDER = os.path.join(PROJECT_ROOT, 'frontend')
     SAMPLE_DATASET_PATH = os.path.join(PROJECT_ROOT, 'frontend', 'assets', 'sample_air_quality_data.csv')
     
     # Upload constraints
