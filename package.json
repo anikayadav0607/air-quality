@@ -1,0 +1,14 @@
+{
+  "name": "air-quality-da013",
+  "version": "1.0.0",
+  "description": "Air Quality and Pollution Pattern Analysis (DA-013)",
+  "scripts": {
+    "start": "python backend/app.py",
+    "dev": "npm --prefix frontend run dev",
+    "serve": "npm --prefix frontend run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
+
