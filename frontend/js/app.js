@@ -185,14 +185,8 @@ const App = {
 
         if (toggleBtn && sidebar) {
             toggleBtn.addEventListener('click', () => {
-                // Desktop toggle collapsed, Mobile toggle show
-                if (window.innerWidth >= 992) {
-                    sidebar.classList.toggle('collapsed');
-                    document.getElementById('mainContentWrapper')?.classList.toggle('expanded');
-                } else {
-                    sidebar.classList.toggle('mobile-open');
-                    overlay?.classList.toggle('active');
-                }
+                sidebar.classList.toggle('mobile-open');
+                overlay?.classList.toggle('active');
             });
         }
 

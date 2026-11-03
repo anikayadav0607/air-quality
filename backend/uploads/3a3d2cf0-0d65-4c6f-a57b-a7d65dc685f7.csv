@@ -1,0 +1,4 @@
+date,location,city,pm25,pm10,no2,so2,o3
+2024-05-01,Test Station Alpha,Metro,35.2,55.0,22.1,8.4,45.0
+2024-05-02,Test Station Beta,Metro,42.0,68.4,28.0,10.2,40.5
+2024-05-03,Test Station Alpha,Metro,29.4,48.2,18.5,6.1,50.2

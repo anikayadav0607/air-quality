@@ -18,105 +18,108 @@
         <!-- SIDEBAR OVERLAY (Mobile) -->
         <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
-        <!-- COLLAPSIBLE SIDEBAR -->
-        <aside id="appSidebar">
-            <!-- Sidebar Header / Logo -->
-            <div class="sidebar-header">
-                <div class="brand-logo-icon">
-                    <i class="fa-solid fa-wind"></i>
-                </div>
-                <div class="brand-title-wrap">
-                    <h1 class="brand-name">Air Quality Analytics</h1>
-                    <span class="brand-badge"><i class="fa-solid fa-leaf me-1"></i>CODE: DA-013</span>
-                </div>
-            </div>
-
-            <!-- Navigation Links -->
-            <div class="sidebar-nav-container">
-                <div class="nav-section-label">Core Navigation</div>
-                <ul class="sidebar-nav-list">
-                    <li>
-                        <a href="#dashboard" class="nav-link-item active">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span class="nav-item-text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#upload" class="nav-link-item">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span class="nav-item-text">Upload Dataset</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#preview" class="nav-link-item">
-                            <i class="fa-solid fa-table-cells"></i>
-                            <span class="nav-item-text">Data Preview</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#cleaning" class="nav-link-item">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span class="nav-item-text">Data Cleaning</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="nav-section-label">Environmental Insights</div>
-                <ul class="sidebar-nav-list">
-                    <li>
-                        <a href="#analysis" class="nav-link-item">
-                            <i class="fa-solid fa-sliders"></i>
-                            <span class="nav-item-text">Pollution Analysis</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#charts" class="nav-link-item">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span class="nav-item-text">Charts & Visuals</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#reports" class="nav-link-item">
-                            <i class="fa-solid fa-file-lines"></i>
-                            <span class="nav-item-text">Reports</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#about" class="nav-link-item">
-                            <i class="fa-solid fa-circle-info"></i>
-                            <span class="nav-item-text">About Project</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Sidebar Footer -->
-            <div class="sidebar-footer-card">
-                <div class="sidebar-status-box">
-                    <div class="d-flex align-items-center justify-content-between mb-1">
-                        <span class="fw-bold text-secondary">Dataset Status</span>
-                        <span class="badge bg-success-subtle text-success">Active</span>
-                    </div>
-                    <div class="text-muted small">Sample 2024 Records Loaded</div>
-                    <div class="progress mt-2" style="height: 4px;">
-                        <div class="progress-bar bg-success" style="width: 100%;"></div>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN WRAPPER -->
-        <div id="mainContentWrapper">
-            <!-- TOPBAR -->
-            <header id="topNavbar">
-                <div class="topbar-left">
-                    <button id="sidebarToggleBtn" class="toggle-sidebar-btn" title="Toggle Sidebar" aria-label="Toggle Navigation">
+        <!-- TOP NAVIGATION HEADER -->
+        <header id="topNavbar" class="app-top-header">
+            <!-- Main Navbar Row: Brand + Horizontal Nav + Controls -->
+            <div class="top-header-main">
+                <div class="top-header-left">
+                    <button id="sidebarToggleBtn" class="mobile-nav-toggle-btn d-lg-none" title="Toggle Navigation Menu" aria-label="Toggle Navigation">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h2 id="currentViewTitle" class="breadcrumb-title">Dashboard Overview</h2>
+                    <div class="brand-header">
+                        <div class="brand-logo-icon">
+                            <i class="fa-solid fa-wind"></i>
+                        </div>
+                        <div class="brand-title-wrap">
+                            <h1 class="brand-name">Air Quality Analytics</h1>
+                            <span class="brand-badge"><i class="fa-solid fa-leaf me-1"></i>CODE: DA-013</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="topbar-right">
+                <!-- Navigation Links (Horizontal on Desktop, Slide Drawer on Mobile) -->
+                <nav id="appSidebar" class="top-nav-menu">
+                    <div class="mobile-drawer-header d-lg-none">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="brand-logo-icon" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                                <i class="fa-solid fa-wind"></i>
+                            </div>
+                            <span class="fw-bold text-white small">Air Quality Analytics</span>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" onclick="document.getElementById('appSidebar').classList.remove('mobile-open');document.getElementById('sidebarOverlay').classList.remove('active');" aria-label="Close"></button>
+                    </div>
+
+                    <div class="nav-section-label d-lg-none">Navigation</div>
+                    <ul class="top-nav-list">
+                        <li>
+                            <a href="#dashboard" class="nav-link-item active">
+                                <i class="fa-solid fa-chart-pie"></i>
+                                <span class="nav-item-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#upload" class="nav-link-item">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span class="nav-item-text">Upload Dataset</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#preview" class="nav-link-item">
+                                <i class="fa-solid fa-table-cells"></i>
+                                <span class="nav-item-text">Data Preview</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#cleaning" class="nav-link-item">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span class="nav-item-text">Data Cleaning</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#analysis" class="nav-link-item">
+                                <i class="fa-solid fa-sliders"></i>
+                                <span class="nav-item-text">Pollution Analysis</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#charts" class="nav-link-item">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span class="nav-item-text">Charts & Visuals</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#reports" class="nav-link-item">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <span class="nav-item-text">Reports</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#about" class="nav-link-item">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span class="nav-item-text">About</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Mobile Drawer Footer -->
+                    <div class="mobile-drawer-footer d-lg-none">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="small fw-semibold text-secondary">Dataset Status</span>
+                            <span class="badge bg-success-subtle text-success">Active</span>
+                        </div>
+                        <div class="text-muted small" style="font-size: 0.75rem;">Sample 2024 Records Loaded</div>
+                    </div>
+                </nav>
+
+                <!-- Right Action Utilities -->
+                <div class="top-header-right">
+                    <!-- Dataset Status Badge on Desktop -->
+                    <div class="top-dataset-chip d-none d-xl-flex align-items-center gap-2 px-2 py-1 rounded-3">
+                        <span class="status-pulse-dot"></span>
+                        <span class="small text-muted fw-semibold" style="font-size: 0.78rem;">Dataset:</span>
+                        <span class="badge bg-success-subtle text-success" style="font-size: 0.75rem;">Active</span>
+                    </div>
+
                     <!-- Backend Connectivity Badge -->
                     <div id="backendStatusBadge" class="badge bg-warning-subtle text-dark border border-warning-subtle px-3 py-2 cursor-pointer" title="Click for Flask Backend connection details">
                         <span id="backendStatusText"><i class="fa-solid fa-circle-pause text-warning me-1"></i> Demo Mode (Flask Disconnected)</span>
@@ -133,13 +136,31 @@
                         <div class="rounded-circle bg-primary-subtle text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-size: 0.85rem;">
                             EA
                         </div>
-                        <div class="d-none d-md-block text-start" style="line-height: 1.1;">
+                        <div class="d-none d-xxl-block text-start" style="line-height: 1.1;">
                             <div class="fw-bold small">Env. Analyst</div>
                             <small class="text-muted" style="font-size: 0.72rem;">Academic Research</small>
                         </div>
                     </div>
                 </div>
-            </header>
+            </div>
+
+            <!-- Breadcrumb Sub-Bar -->
+            <div class="top-header-subbar">
+                <div class="subbar-content px-3 px-lg-4 py-2 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small"><i class="fa-solid fa-compass me-1 text-primary"></i>Current Section:</span>
+                        <h2 id="currentViewTitle" class="breadcrumb-title mb-0">Dashboard Overview</h2>
+                    </div>
+                    <div class="d-none d-md-flex align-items-center gap-2 text-muted small" style="font-size: 0.78rem;">
+                        <i class="fa-solid fa-clock-rotate-left text-success"></i>
+                        <span>Observations: 2024-01-01 ~ 2024-12-31</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN WRAPPER -->
+        <div id="mainContentWrapper">
 
             <!-- APP CONTENT CONTAINER -->
             <main class="app-content-container">
